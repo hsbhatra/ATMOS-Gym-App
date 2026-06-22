@@ -679,7 +679,7 @@ export default function LandingPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          paddingTop: "300px",
+          paddingTop: "350px",
         }}
       >
         {/* <ParticleBackground /> */}
