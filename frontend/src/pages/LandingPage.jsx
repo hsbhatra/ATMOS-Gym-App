@@ -401,9 +401,28 @@ export default function LandingPage() {
 
   // ── Render ───────────────────────────────────────────────────────────────────
   return (
+    // <div
+    //   style={{ minHeight: "100vh", background: "#0a0a0a", overflowX: "hidden" }}
+    // >
     <div
-      style={{ minHeight: "100vh", background: "#0a0a0a", overflowX: "hidden" }}
+      style={{
+        minHeight: "100vh",
+        background: "#0a0a0a",
+        overflowX: "hidden",
+        position: "relative",
+      }}
     >
+      {/* Full page 3D background — sits behind everything */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+      >
+        <ParticleBackground />
+      </div>
       {/* ══ NAVBAR ══════════════════════════════════════════════════════════════ */}
       <nav
         style={{
@@ -663,7 +682,7 @@ export default function LandingPage() {
           paddingTop: "300px",
         }}
       >
-        <ParticleBackground />
+        {/* <ParticleBackground /> */}
 
         <div
           style={{
@@ -885,7 +904,13 @@ export default function LandingPage() {
         />
 
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "64px", paddingTop: "250px" }}>
+          <div
+            style={{
+              textAlign: "center",
+              marginBottom: "64px",
+              paddingTop: "250px",
+            }}
+          >
             <SectionLabel text="Training Programs" />
             <h2
               style={{
@@ -1209,7 +1234,7 @@ export default function LandingPage() {
       <section
         style={{
           padding: "100px 1.5rem",
-          background: "rgba(255,255,255,0.01)",
+          background: "rgba(10,10,10,0.6)",
           borderTop: "1px solid rgba(255,255,255,0.04)",
           borderBottom: "1px solid rgba(255,255,255,0.04)",
         }}
@@ -1511,7 +1536,7 @@ export default function LandingPage() {
       <section
         style={{
           padding: "100px 1.5rem",
-          background: "rgba(255,255,255,0.01)",
+          background: "rgba(10,10,10,0.6)",
           borderTop: "1px solid rgba(255,255,255,0.04)",
         }}
       >
