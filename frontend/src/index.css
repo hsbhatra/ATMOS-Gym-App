@@ -208,3 +208,18 @@ body {
     display: flex !important;
   }
 }
+
+/* Ensure all page content sits above the fixed 3D background */
+nav, section, footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Semi-transparent section backgrounds so 3D shows through */
+.section-dark {
+  background: rgba(10, 10, 10, 0.75) !important;
+}
+
+.section-darker {
+  background: rgba(10, 10, 10, 0.88) !important;
+}
