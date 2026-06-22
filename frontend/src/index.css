@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/* ── Global Base Styles ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --gold: #e8c44a;
+  --gold-dark: #c9a832;
+  --gold-light: #f0d060;
+  --black: #0a0a0a;
+  --dark: #111111;
+  --dark-2: #1a1a1a;
+  --dark-3: #222222;
+  --dark-4: #2a2a2a;
+  --gray: #555555;
+  --gray-light: #888888;
+  --white: #ffffff;
+  --white-dim: rgba(255, 255, 255, 0.7);
+  --white-muted: rgba(255, 255, 255, 0.4);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--black);
+  color: var(--white);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar Styling ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dark-4);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* ── Selection Color ── */
+::selection {
+  background: var(--gold);
+  color: var(--black);
+}
+
+/* ── Glassmorphism Utility ── */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-gold {
+  background: rgba(232, 196, 74, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(232, 196, 74, 0.15);
+}
+
+/* ── Gold Gradient Text ── */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #e8c44a, #f0d060, #c9a832);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Input Base Style ── */
+.input-dark {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--white);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.input-dark::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.input-dark:focus {
+  border-color: var(--gold);
+  background: rgba(232, 196, 74, 0.04);
+}
+
+.input-dark:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Button Styles ── */
+.btn-gold {
+  width: 100%;
+  background: var(--gold);
+  color: var(--black);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  padding: 13px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.btn-gold:hover {
+  background: var(--gold-light);
+  box-shadow: 0 4px 20px rgba(232, 196, 74, 0.3);
+}
+
+.btn-gold:active {
+  transform: scale(0.99);
+}
+
+.btn-gold:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--white-dim);
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ── Page Transition ── */
+.page-enter {
+  animation: fadeSlideUp 0.4s ease forwards;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Auth Card ── */
+.auth-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+}
+
+/* ── Loading Spinner ── */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: var(--black);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Responsive Navbar ── */
+@media (max-width: 768px) {
+  .nav-links-desktop {
+    display: none !important;
+  }
+  .nav-cta-desktop {
+    display: none !important;
+  }
+  .nav-hamburger {
+    display: flex !important;
+  }
+}
