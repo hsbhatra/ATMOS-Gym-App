@@ -84,6 +84,50 @@ const userSchema = new mongoose.Schema(
       // Stores the Cloudinary public_id — needed to delete the old image
       // when user uploads a new one or removes their picture
     },
+
+    // --- READABLE USER ID ---
+    userId: {
+      type: String,
+      unique: true,
+      sparse: true, // allows null values without unique conflict
+      trim: true,
+    },
+
+    // --- BODY INFORMATION ---
+    height: {
+      type: Number,
+      default: null,
+      min: [50, "Height must be at least 50cm"],
+      max: [300, "Height cannot exceed 300cm"],
+    },
+
+    weight: {
+      type: Number,
+      default: null,
+      min: [20, "Weight must be at least 20kg"],
+      max: [500, "Weight cannot exceed 500kg"],
+    },
+
+    dateOfBirth: {
+      type: Date,
+      default: null,
+    },
+
+    gender: {
+      type: String,
+      enum: {
+        values: ["male", "female", "other", "preferNotToSay"],
+        message: "Invalid gender value",
+      },
+      default: null,
+    },
+
+    bio: {
+      type: String,
+      default: null,
+      maxlength: [200, "Bio cannot exceed 200 characters"],
+      trim: true,
+    },
   },
 
   {
@@ -99,14 +143,20 @@ const userSchema = new mongoose.Schema(
   },
 );
 
+// Hook 1 — Password hashing
 userSchema.pre("save", async function () {
-  if (!this.isModified("passwordHash")) {
-    return;
-  }
+  if (!this.isModified("passwordHash")) return;
   this.passwordHash = await bcrypt.hash(
     this.passwordHash,
     BCRYPT_CONFIG.SALT_ROUNDS,
   );
+});
+
+// Hook 2 — Auto-generate userId for new users
+userSchema.pre("save", async function () {
+  if (!this.isNew || this.userId) return;
+  const count = await mongoose.model("User").countDocuments();
+  this.userId = `hulkgym_${String(count + 1).padStart(4, "0")}`;
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
