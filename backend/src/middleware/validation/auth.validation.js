@@ -98,16 +98,29 @@ const updateProfileSchema = Joi.object({
       "string.min": "First name must be at least 2 characters",
       "string.max": "First name cannot exceed 50 characters",
     }),
-
   lastName: Joi.string().min(2).max(50).trim()
     .messages({
       "string.min": "Last name must be at least 2 characters",
       "string.max": "Last name cannot exceed 50 characters",
     }),
-
-  phoneNumber: Joi.string().pattern(/^[6-9]\d{9}$/)
+  height: Joi.number().min(50).max(300)
     .messages({
-      "string.pattern.base": "Please provide a valid 10-digit Indian mobile number",
+      "number.min": "Height must be at least 50cm",
+      "number.max": "Height cannot exceed 300cm",
+    }),
+  weight: Joi.number().min(20).max(500)
+    .messages({
+      "number.min": "Weight must be at least 20kg",
+      "number.max": "Weight cannot exceed 500kg",
+    }),
+  dateOfBirth: Joi.date().max("now")
+    .messages({
+      "date.max": "Date of birth cannot be in the future",
+    }),
+  gender: Joi.string().valid("male", "female", "other", "preferNotToSay"),
+  bio: Joi.string().max(200).trim()
+    .messages({
+      "string.max": "Bio cannot exceed 200 characters",
     }),
 });
 

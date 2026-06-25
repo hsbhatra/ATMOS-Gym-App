@@ -33,42 +33,28 @@ export const getProfile = async (userId) => {
 // =============================================================================
 
 export const updateProfile = async (userId, updateData) => {
-  const { firstName, lastName, phoneNumber } = updateData;
+  const { firstName, lastName, height, weight, dateOfBirth, gender, bio } = updateData;
 
-  // Build update object with only the fields that were actually sent
-  // If a field is undefined (not sent), we don't touch it in the DB
   const fieldsToUpdate = {};
-  if (firstName  !== undefined) fieldsToUpdate.firstName   = firstName;
-  if (lastName   !== undefined) fieldsToUpdate.lastName    = lastName;
-  if (phoneNumber !== undefined) fieldsToUpdate.phoneNumber = phoneNumber;
+  if (firstName   !== undefined) fieldsToUpdate.firstName   = firstName;
+  if (lastName    !== undefined) fieldsToUpdate.lastName    = lastName;
+  if (height      !== undefined) fieldsToUpdate.height      = height;
+  if (weight      !== undefined) fieldsToUpdate.weight      = weight;
+  if (dateOfBirth !== undefined) fieldsToUpdate.dateOfBirth = dateOfBirth;
+  if (gender      !== undefined) fieldsToUpdate.gender      = gender;
+  if (bio         !== undefined) fieldsToUpdate.bio         = bio;
 
   if (Object.keys(fieldsToUpdate).length === 0) {
     throw ApiError.badRequest("No valid fields provided to update.");
-  }
-
-  // Check phone number not already taken by another user
-  if (phoneNumber) {
-    const existingPhone = await User.findOne({
-      phoneNumber,
-      _id: { $ne: userId }, // exclude current user from the check
-    });
-    if (existingPhone) {
-      throw ApiError.conflict("This phone number is already registered to another account.");
-    }
   }
 
   const user = await User.findByIdAndUpdate(
     userId,
     { $set: fieldsToUpdate },
     { new: true, runValidators: true }
-    // new: true → returns the updated document, not the old one
-    // runValidators: true → runs schema validators on the new values
   );
 
-  if (!user) {
-    throw ApiError.notFound("User not found.");
-  }
-
+  if (!user) throw ApiError.notFound("User not found.");
   return user;
 };
 
