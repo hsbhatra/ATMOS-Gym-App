@@ -2,8 +2,14 @@ import nodemailer from "nodemailer";
 import { EMAIL_CONFIG, OTP_CONFIG } from "../../utils/constants.js";
 
 const createTransporter = () => {
+  console.log("[Email] Creating email transporter...");
+  console.log("[Email] BREVO_SMTP_HOST:", process.env.BREVO_SMTP_HOST ? "Set" : "Not set");
+  console.log("[Email] BREVO_SMTP_PORT:", process.env.BREVO_SMTP_PORT);
+  console.log("[Email] BREVO_SMTP_USER:", process.env.BREVO_SMTP_USER);
+  
   // Use Brevo (Sendinblue) if configured, otherwise fall back to Gmail
   if (process.env.BREVO_SMTP_HOST) {
+    console.log("[Email] Using Brevo SMTP");
     return nodemailer.createTransport({
       host: process.env.BREVO_SMTP_HOST,
       port: parseInt(process.env.BREVO_SMTP_PORT || "587"),
@@ -15,6 +21,7 @@ const createTransporter = () => {
   }
   
   // Fallback to Gmail (for testing only)
+  console.log("[Email] Using Gmail SMTP (fallback)");
   return nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -27,16 +34,25 @@ const createTransporter = () => {
 const sendOtpEmail = async (to, subject, htmlBody) => {
   try {
     const transporter = createTransporter();
+    console.log("[Email] Transporter created, verifying connection...");
+    
+    // Verify connection first
+    await transporter.verify();
+    console.log("[Email] SMTP connection verified successfully");
+    
+    const fromEmail = process.env.BREVO_SMTP_USER || process.env.EMAIL_USER;
+    console.log(`[Email] Sending email from ${fromEmail} to ${to} with subject: ${subject}`);
 
     await transporter.sendMail({
-      from: `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
+      from: `"${EMAIL_CONFIG.FROM_NAME}" <${fromEmail}>`,
       to,
       subject,
       html: htmlBody,
     });
-    console.log(`Email sent successfully to ${to}`);
+    console.log(`[Email] Email sent successfully to ${to}`);
   } catch (error) {
-    console.error(`Failed to send email to ${to}:`, error.message);
+    console.error(`[Email] Failed to send email to ${to}:`, error);
+    console.error(`[Email] Error details:`, error.stack);
     // Don't throw the error - let the registration proceed even if email fails
   }
 };
