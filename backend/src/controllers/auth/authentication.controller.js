@@ -65,10 +65,14 @@ export const register = asyncHandler(async (req, res) => {
       passwordHash: password,
       expiresAt: new Date(Date.now() + 15 * 60 * 1000),
     },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
+    { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true }
   );
 
   const rawOtp = await generateAndSaveOtp(email, OTP_CONFIG.PURPOSES.REGISTRATION);
+  
+  // Log OTP to console for testing purposes
+  console.log(`OTP for ${email}: ${rawOtp}`);
+  
   await sendRegistrationOtp(email, rawOtp);
 
   return new ApiResponse(
@@ -146,6 +150,10 @@ export const resendRegistrationOtp = asyncHandler(async (req, res) => {
   }
 
   const rawOtp = await resendOtp(email, OTP_CONFIG.PURPOSES.REGISTRATION);
+  
+  // Log OTP to console for testing purposes
+  console.log(`Resent OTP for ${email}: ${rawOtp}`);
+  
   await tempReg.refreshExpiry();
   await sendRegistrationOtp(email, rawOtp);
 

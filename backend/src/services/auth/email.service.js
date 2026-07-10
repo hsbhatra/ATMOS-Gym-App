@@ -12,14 +12,20 @@ const createTransporter = () => {
 };
 
 const sendOtpEmail = async (to, subject, htmlBody) => {
-  const transporter = createTransporter();
+  try {
+    const transporter = createTransporter();
 
-  await transporter.sendMail({
-    from: `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html: htmlBody,
-  });
+    await transporter.sendMail({
+      from: `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html: htmlBody,
+    });
+    console.log(`Email sent successfully to ${to}`);
+  } catch (error) {
+    console.error(`Failed to send email to ${to}:`, error.message);
+    // Don't throw the error - let the registration proceed even if email fails
+  }
 };
 
 const buildOtpEmailHtml = (otp, headingText, bodyText) => {
