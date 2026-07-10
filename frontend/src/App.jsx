@@ -4,13 +4,14 @@
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { useAuthStore } from "./store/authStore.js";
+import { useAuthInit } from "./hooks/useAuthInit.js";
 import {
   ProtectedRoute,
   PublicRoute,
 } from "./components/layout/ProtectedRoute.jsx";
+import AppLoader from "./components/ui/AppLoader.jsx";
 
-// Pages — we create these one by one in the next steps
-// For now they are placeholders so the router works
 import LandingPage from "./pages/LandingPage.jsx";
 import RegisterPage from "./pages/auth/RegisterPage.jsx";
 import VerifyOtpPage from "./pages/auth/VerifyOtpPage.jsx";
@@ -22,10 +23,21 @@ import ProfilePage from "./pages/profile/ProfilePage.jsx";
 import SessionsPage from "./pages/profile/SessionsPage.jsx";
 import ChangePasswordPage from "./pages/profile/ChangePasswordPage.jsx";
 
-export default function App() {
+// =============================================================================
+// AppContent — renders after session initialization completes
+// =============================================================================
+function AppContent() {
+  // Run session restore on every app startup
+  useAuthInit();
+
+  const isInitialized = useAuthStore((s) => s.isInitialized);
+
+  // Show loading screen while we silently check for existing session
+  // This prevents the brief flash of login page before session is restored
+  if (!isInitialized) return <AppLoader />;
+
   return (
-    <BrowserRouter>
-      {/* Toast notifications — shows success/error popups */}
+    <>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -36,20 +48,16 @@ export default function App() {
             borderRadius: "10px",
             fontSize: "14px",
           },
-          success: {
-            iconTheme: { primary: "#e8c44a", secondary: "#0a0a0a" },
-          },
-          error: {
-            iconTheme: { primary: "#ef4444", secondary: "#ffffff" },
-          },
+          success: { iconTheme: { primary: "#e8c44a", secondary: "#0a0a0a" } },
+          error: { iconTheme: { primary: "#ef4444", secondary: "#ffffff" } },
         }}
       />
 
       <Routes>
-        {/* Public routes — accessible by everyone */}
+        {/* Public — accessible by everyone */}
         <Route path="/" element={<LandingPage />} />
 
-        {/* Auth routes — only for NON logged-in users */}
+        {/* Auth — only for non-logged-in users */}
         <Route
           path="/register"
           element={
@@ -99,7 +107,7 @@ export default function App() {
           }
         />
 
-        {/* Protected routes — only for logged-in users */}
+        {/* Protected — only for logged-in users */}
         <Route
           path="/profile"
           element={
@@ -125,6 +133,17 @@ export default function App() {
           }
         />
       </Routes>
+    </>
+  );
+}
+
+// =============================================================================
+// App — wraps everything in BrowserRouter
+// =============================================================================
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

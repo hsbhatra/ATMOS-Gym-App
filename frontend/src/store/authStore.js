@@ -1,41 +1,35 @@
 // =============================================================================
 // src/store/authStore.js
 // =============================================================================
-// Global authentication state stored in memory (not localStorage).
-// Any component in the app can read from or write to this store.
-// =============================================================================
 
 import { create } from "zustand";
 
 export const useAuthStore = create((set) => ({
-  // ── State ──────────────────────────────────────────────────────────────────
+  user: null,
+  accessToken: null,
+  isAuthenticated: false,
+  isInitialized: false, // ← NEW: has the app tried to restore session yet?
 
-  user            : null,   // logged-in user object { _id, firstName, role... }
-  accessToken     : null,   // JWT access token (15 min expiry)
-  isAuthenticated : false,  // quick boolean check for protected routes
+  setAuth: (user, accessToken) =>
+    set({
+      user,
+      accessToken,
+      isAuthenticated: true,
+      isInitialized: true,
+    }),
 
-  // ── Actions ────────────────────────────────────────────────────────────────
-
-  // Called after successful login or registration
-  // Stores user data and access token in memory
-  setAuth: (user, accessToken) => set({
-    user,
-    accessToken,
-    isAuthenticated: true,
-  }),
-
-  // Called when a new access token is issued (auto-refresh)
-  // Only updates the token, keeps user data intact
   setAccessToken: (accessToken) => set({ accessToken }),
 
-  // Called when user updates their profile
-  // Updates user data without touching the token
   setUser: (user) => set({ user }),
 
-  // Called on logout — clears everything from memory
-  logout: () => set({
-    user            : null,
-    accessToken     : null,
-    isAuthenticated : false,
-  }),
+  logout: () =>
+    set({
+      user: null,
+      accessToken: null,
+      isAuthenticated: false,
+      isInitialized: true, // still initialized — just not logged in
+    }),
+
+  // Called when init completes but no session was found
+  setInitialized: () => set({ isInitialized: true }),
 }));

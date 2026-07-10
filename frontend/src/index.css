@@ -223,3 +223,8 @@ nav, section, footer {
 .section-darker {
   background: rgba(10, 10, 10, 0.88) !important;
 }
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1);    opacity: 1;   }
+  50%       { transform: scale(1.08); opacity: 0.8; }
+}
