@@ -23,10 +23,19 @@ const app = express();
 app.use(helmet());
 
 // cors: allows your frontend (different port/domain) to call this API
-// In production, replace '*' with your actual frontend URL
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: (origin, callback) => {
+      // Normalize both the allowed client URL and incoming origin by removing trailing slashes
+      const allowedOrigin = process.env.CLIENT_URL?.replace(/\/$/, "") || "http://localhost:5173";
+      const normalizedOrigin = origin?.replace(/\/$/, "");
+      
+      if (!origin || normalizedOrigin === allowedOrigin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true, // required to send/receive cookies cross-origin
   }),
 );
