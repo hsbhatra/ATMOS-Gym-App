@@ -2,6 +2,19 @@ import nodemailer from "nodemailer";
 import { EMAIL_CONFIG, OTP_CONFIG } from "../../utils/constants.js";
 
 const createTransporter = () => {
+  // Use Brevo (Sendinblue) if configured, otherwise fall back to Gmail
+  if (process.env.BREVO_SMTP_HOST) {
+    return nodemailer.createTransport({
+      host: process.env.BREVO_SMTP_HOST,
+      port: parseInt(process.env.BREVO_SMTP_PORT || "587"),
+      auth: {
+        user: process.env.BREVO_SMTP_USER,
+        pass: process.env.BREVO_SMTP_PASS,
+      },
+    });
+  }
+  
+  // Fallback to Gmail (for testing only)
   return nodemailer.createTransport({
     service: "gmail",
     auth: {

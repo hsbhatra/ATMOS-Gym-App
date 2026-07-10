@@ -75,7 +75,7 @@ export const COOKIE_CONFIG = {
     NAME: "refreshToken",
     HTTP_ONLY: true,
     SECURE: process.env.NODE_ENV === "production",
-    SAME_SITE: "strict",
+    SAME_SITE: process.env.NODE_ENV === "production" ? "none" : "lax",
     MAX_AGE: SESSION_CONFIG.EXPIRY_MS,
   },
 };
