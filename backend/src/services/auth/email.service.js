@@ -1,4 +1,3 @@
-import axios from "axios";
 import { EMAIL_CONFIG, OTP_CONFIG } from "../../utils/constants.js";
 
 const sendOtpEmail = async (to, subject, htmlBody) => {
@@ -8,9 +7,13 @@ const sendOtpEmail = async (to, subject, htmlBody) => {
       console.log("[Email] Using Brevo API to send email");
       const fromEmail = process.env.BREVO_SENDER_EMAIL || process.env.BREVO_SMTP_USER || process.env.EMAIL_USER;
       
-      await axios.post(
-        "https://api.brevo.com/v3/smtp/email",
-        {
+      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           sender: {
             name: EMAIL_CONFIG.FROM_NAME,
             email: fromEmail,
@@ -18,14 +21,14 @@ const sendOtpEmail = async (to, subject, htmlBody) => {
           to: [{ email: to }],
           subject,
           htmlContent: htmlBody,
-        },
-        {
-          headers: {
-            "api-key": process.env.BREVO_API_KEY,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`Brevo API error: ${response.status} - ${errorData}`);
+      }
+
       console.log(`[Email] Email sent successfully to ${to} via Brevo API`);
       return;
     }
@@ -33,7 +36,7 @@ const sendOtpEmail = async (to, subject, htmlBody) => {
     // Fallback: If no API key, just log (for testing)
     console.log(`[Email] No Brevo API key found - email not sent (for testing only)`);
   } catch (error) {
-    console.error(`[Email] Failed to send email to ${to}:`, error.response?.data || error.message);
+    console.error(`[Email] Failed to send email to ${to}:`, error.message);
     console.error(`[Email] Error details:`, error.stack);
     // Don't throw the error - let the registration proceed even if email fails
   }
