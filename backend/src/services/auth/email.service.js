@@ -10,13 +10,19 @@ const createTransporter = () => {
   // Use Brevo (Sendinblue) if configured, otherwise fall back to Gmail
   if (process.env.BREVO_SMTP_HOST) {
     console.log("[Email] Using Brevo SMTP");
+    const port = parseInt(process.env.BREVO_SMTP_PORT || "465");
     return nodemailer.createTransport({
       host: process.env.BREVO_SMTP_HOST,
-      port: parseInt(process.env.BREVO_SMTP_PORT || "587"),
+      port: port,
+      secure: port === 465, // true for port 465 (SSL), false for 587 (STARTTLS)
       auth: {
         user: process.env.BREVO_SMTP_USER,
         pass: process.env.BREVO_SMTP_PASS,
       },
+      tls: {
+        // Don't fail on invalid certificates (for Render compatibility)
+        rejectUnauthorized: false
+      }
     });
   }
   
