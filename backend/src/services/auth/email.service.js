@@ -1,63 +1,39 @@
-import nodemailer from "nodemailer";
+import axios from "axios";
 import { EMAIL_CONFIG, OTP_CONFIG } from "../../utils/constants.js";
-
-const createTransporter = () => {
-  console.log("[Email] Creating email transporter...");
-  console.log("[Email] BREVO_SMTP_HOST:", process.env.BREVO_SMTP_HOST ? "Set" : "Not set");
-  console.log("[Email] BREVO_SMTP_PORT:", process.env.BREVO_SMTP_PORT);
-  console.log("[Email] BREVO_SMTP_USER:", process.env.BREVO_SMTP_USER);
-  
-  // Use Brevo (Sendinblue) if configured, otherwise fall back to Gmail
-  if (process.env.BREVO_SMTP_HOST) {
-    console.log("[Email] Using Brevo SMTP");
-    const port = parseInt(process.env.BREVO_SMTP_PORT || "465");
-    return nodemailer.createTransport({
-      host: process.env.BREVO_SMTP_HOST,
-      port: port,
-      secure: port === 465, // true for port 465 (SSL), false for 587 (STARTTLS)
-      auth: {
-        user: process.env.BREVO_SMTP_USER,
-        pass: process.env.BREVO_SMTP_PASS,
-      },
-      tls: {
-        // Don't fail on invalid certificates (for Render compatibility)
-        rejectUnauthorized: false
-      }
-    });
-  }
-  
-  // Fallback to Gmail (for testing only)
-  console.log("[Email] Using Gmail SMTP (fallback)");
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-};
 
 const sendOtpEmail = async (to, subject, htmlBody) => {
   try {
-    const transporter = createTransporter();
-    console.log("[Email] Transporter created, verifying connection...");
+    // Use Brevo API if API key is available
+    if (process.env.BREVO_API_KEY) {
+      console.log("[Email] Using Brevo API to send email");
+      const fromEmail = process.env.BREVO_SENDER_EMAIL || process.env.BREVO_SMTP_USER || process.env.EMAIL_USER;
+      
+      await axios.post(
+        "https://api.brevo.com/v3/smtp/email",
+        {
+          sender: {
+            name: EMAIL_CONFIG.FROM_NAME,
+            email: fromEmail,
+          },
+          to: [{ email: to }],
+          subject,
+          htmlContent: htmlBody,
+        },
+        {
+          headers: {
+            "api-key": process.env.BREVO_API_KEY,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(`[Email] Email sent successfully to ${to} via Brevo API`);
+      return;
+    }
     
-    // Verify connection first
-    await transporter.verify();
-    console.log("[Email] SMTP connection verified successfully");
-    
-    const fromEmail = process.env.BREVO_SMTP_USER || process.env.EMAIL_USER;
-    console.log(`[Email] Sending email from ${fromEmail} to ${to} with subject: ${subject}`);
-
-    await transporter.sendMail({
-      from: `"${EMAIL_CONFIG.FROM_NAME}" <${fromEmail}>`,
-      to,
-      subject,
-      html: htmlBody,
-    });
-    console.log(`[Email] Email sent successfully to ${to}`);
+    // Fallback: If no API key, just log (for testing)
+    console.log(`[Email] No Brevo API key found - email not sent (for testing only)`);
   } catch (error) {
-    console.error(`[Email] Failed to send email to ${to}:`, error);
+    console.error(`[Email] Failed to send email to ${to}:`, error.response?.data || error.message);
     console.error(`[Email] Error details:`, error.stack);
     // Don't throw the error - let the registration proceed even if email fails
   }
