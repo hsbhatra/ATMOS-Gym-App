@@ -8,118 +8,120 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as THREE from "three";
 import { registerUser } from "../../services/authService.js";
+import ParticleBackground from "../../components/three/ParticleBackground.jsx";
+
 
 // =============================================================================
 // ParticleBackground
 // =============================================================================
-function ParticleBackground() {
-  const mountRef = useRef(null);
+// function ParticleBackground() {
+//   const mountRef = useRef(null);
 
-  useEffect(() => {
-    const mount  = mountRef.current;
-    const width  = mount.clientWidth;
-    const height = mount.clientHeight;
+//   useEffect(() => {
+//     const mount  = mountRef.current;
+//     const width  = mount.clientWidth;
+//     const height = mount.clientHeight;
 
-    const scene    = new THREE.Scene();
-    const camera   = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-    mount.appendChild(renderer.domElement);
-    camera.position.z = 80;
+//     const scene    = new THREE.Scene();
+//     const camera   = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+//     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+//     renderer.setSize(width, height);
+//     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+//     renderer.setClearColor(0x000000, 0);
+//     mount.appendChild(renderer.domElement);
+//     camera.position.z = 80;
 
-    const COUNT      = 100;
-    const positions  = new Float32Array(COUNT * 3);
-    const velocities = [];
-    for (let i = 0; i < COUNT; i++) {
-      positions[i*3]   = (Math.random() - 0.5) * 200;
-      positions[i*3+1] = (Math.random() - 0.5) * 200;
-      positions[i*3+2] = (Math.random() - 0.5) * 200;
-      velocities.push(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.06,
-        (Math.random() - 0.5) * 0.06,
-        (Math.random() - 0.5) * 0.06
-      ));
-    }
+//     const COUNT      = 100;
+//     const positions  = new Float32Array(COUNT * 3);
+//     const velocities = [];
+//     for (let i = 0; i < COUNT; i++) {
+//       positions[i*3]   = (Math.random() - 0.5) * 200;
+//       positions[i*3+1] = (Math.random() - 0.5) * 200;
+//       positions[i*3+2] = (Math.random() - 0.5) * 200;
+//       velocities.push(new THREE.Vector3(
+//         (Math.random() - 0.5) * 0.06,
+//         (Math.random() - 0.5) * 0.06,
+//         (Math.random() - 0.5) * 0.06
+//       ));
+//     }
 
-    const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xe8c44a, size: 0.8, transparent: true, opacity: 0.6, sizeAttenuation: true })));
+//     const pGeo = new THREE.BufferGeometry();
+//     pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+//     scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xe8c44a, size: 0.8, transparent: true, opacity: 0.6, sizeAttenuation: true })));
 
-    const lGeo = new THREE.BufferGeometry();
-    const lPos  = new Float32Array(COUNT * COUNT * 6);
-    lGeo.setAttribute("position", new THREE.BufferAttribute(lPos, 3));
-    scene.add(new THREE.LineSegments(lGeo, new THREE.LineBasicMaterial({ color: 0xe8c44a, transparent: true, opacity: 0.06 })));
+//     const lGeo = new THREE.BufferGeometry();
+//     const lPos  = new Float32Array(COUNT * COUNT * 6);
+//     lGeo.setAttribute("position", new THREE.BufferAttribute(lPos, 3));
+//     scene.add(new THREE.LineSegments(lGeo, new THREE.LineBasicMaterial({ color: 0xe8c44a, transparent: true, opacity: 0.06 })));
 
-    const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(24, 0.3, 8, 80),
-      new THREE.MeshBasicMaterial({ color: 0xe8c44a, transparent: true, opacity: 0.08, wireframe: true })
-    );
-    scene.add(ring);
+//     const ring = new THREE.Mesh(
+//       new THREE.TorusGeometry(24, 0.3, 8, 80),
+//       new THREE.MeshBasicMaterial({ color: 0xe8c44a, transparent: true, opacity: 0.08, wireframe: true })
+//     );
+//     scene.add(ring);
 
-    const mouse = { x: 0, y: 0 };
-    const onMouse = (e) => {
-      mouse.x = (e.clientX / window.innerWidth  - 0.5) * 0.2;
-      mouse.y = (e.clientY / window.innerHeight - 0.5) * 0.2;
-    };
-    window.addEventListener("mousemove", onMouse);
+//     const mouse = { x: 0, y: 0 };
+//     const onMouse = (e) => {
+//       mouse.x = (e.clientX / window.innerWidth  - 0.5) * 0.2;
+//       mouse.y = (e.clientY / window.innerHeight - 0.5) * 0.2;
+//     };
+//     window.addEventListener("mousemove", onMouse);
 
-    let id;
-    const pos = pGeo.attributes.position.array;
-    const animate = () => {
-      id = requestAnimationFrame(animate);
-      for (let i = 0; i < COUNT; i++) {
-        pos[i*3]   += velocities[i].x;
-        pos[i*3+1] += velocities[i].y;
-        pos[i*3+2] += velocities[i].z;
-        if (Math.abs(pos[i*3])   > 100) velocities[i].x *= -1;
-        if (Math.abs(pos[i*3+1]) > 100) velocities[i].y *= -1;
-        if (Math.abs(pos[i*3+2]) > 100) velocities[i].z *= -1;
-      }
-      pGeo.attributes.position.needsUpdate = true;
+//     let id;
+//     const pos = pGeo.attributes.position.array;
+//     const animate = () => {
+//       id = requestAnimationFrame(animate);
+//       for (let i = 0; i < COUNT; i++) {
+//         pos[i*3]   += velocities[i].x;
+//         pos[i*3+1] += velocities[i].y;
+//         pos[i*3+2] += velocities[i].z;
+//         if (Math.abs(pos[i*3])   > 100) velocities[i].x *= -1;
+//         if (Math.abs(pos[i*3+1]) > 100) velocities[i].y *= -1;
+//         if (Math.abs(pos[i*3+2]) > 100) velocities[i].z *= -1;
+//       }
+//       pGeo.attributes.position.needsUpdate = true;
 
-      let li = 0;
-      for (let i = 0; i < COUNT; i++) {
-        for (let j = i + 1; j < COUNT; j++) {
-          const dx = pos[i*3]-pos[j*3], dy = pos[i*3+1]-pos[j*3+1], dz = pos[i*3+2]-pos[j*3+2];
-          if (Math.sqrt(dx*dx+dy*dy+dz*dz) < 30) {
-            lPos[li++]=pos[i*3]; lPos[li++]=pos[i*3+1]; lPos[li++]=pos[i*3+2];
-            lPos[li++]=pos[j*3]; lPos[li++]=pos[j*3+1]; lPos[li++]=pos[j*3+2];
-          }
-        }
-      }
-      lGeo.attributes.position.needsUpdate = true;
-      lGeo.setDrawRange(0, li / 3);
+//       let li = 0;
+//       for (let i = 0; i < COUNT; i++) {
+//         for (let j = i + 1; j < COUNT; j++) {
+//           const dx = pos[i*3]-pos[j*3], dy = pos[i*3+1]-pos[j*3+1], dz = pos[i*3+2]-pos[j*3+2];
+//           if (Math.sqrt(dx*dx+dy*dy+dz*dz) < 30) {
+//             lPos[li++]=pos[i*3]; lPos[li++]=pos[i*3+1]; lPos[li++]=pos[i*3+2];
+//             lPos[li++]=pos[j*3]; lPos[li++]=pos[j*3+1]; lPos[li++]=pos[j*3+2];
+//           }
+//         }
+//       }
+//       lGeo.attributes.position.needsUpdate = true;
+//       lGeo.setDrawRange(0, li / 3);
 
-      ring.rotation.x += 0.002;
-      ring.rotation.y += 0.003;
-      camera.position.x += (mouse.x * 15 - camera.position.x) * 0.02;
-      camera.position.y += (-mouse.y * 15 - camera.position.y) * 0.02;
-      camera.lookAt(scene.position);
-      renderer.render(scene, camera);
-    };
-    animate();
+//       ring.rotation.x += 0.002;
+//       ring.rotation.y += 0.003;
+//       camera.position.x += (mouse.x * 15 - camera.position.x) * 0.02;
+//       camera.position.y += (-mouse.y * 15 - camera.position.y) * 0.02;
+//       camera.lookAt(scene.position);
+//       renderer.render(scene, camera);
+//     };
+//     animate();
 
-    const onResize = () => {
-      const w = mount.clientWidth, h = mount.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener("resize", onResize);
+//     const onResize = () => {
+//       const w = mount.clientWidth, h = mount.clientHeight;
+//       camera.aspect = w / h;
+//       camera.updateProjectionMatrix();
+//       renderer.setSize(w, h);
+//     };
+//     window.addEventListener("resize", onResize);
 
-    return () => {
-      cancelAnimationFrame(id);
-      window.removeEventListener("mousemove", onMouse);
-      window.removeEventListener("resize", onResize);
-      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
-      renderer.dispose();
-    };
-  }, []);
+//     return () => {
+//       cancelAnimationFrame(id);
+//       window.removeEventListener("mousemove", onMouse);
+//       window.removeEventListener("resize", onResize);
+//       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
+//       renderer.dispose();
+//     };
+//   }, []);
 
-  return <div ref={mountRef} style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }} />;
-}
+//   return <div ref={mountRef} style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }} />;
+// }
 
 // =============================================================================
 // Password Strength Indicator

@@ -6,192 +6,193 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
 import { useAuthStore } from "../store/authStore.js";
+import ParticleBackground from "../components/three/ParticleBackground.jsx";
 
 // =============================================================================
 // ParticleBackground — Three.js 3D animated background
 // =============================================================================
 
-function ParticleBackground() {
-  const mountRef = useRef(null);
+// function ParticleBackground() {
+//   const mountRef = useRef(null);
 
-  useEffect(() => {
-    const mount = mountRef.current;
-    const width = mount.clientWidth;
-    const height = mount.clientHeight;
+//   useEffect(() => {
+//     const mount = mountRef.current;
+//     const width = mount.clientWidth;
+//     const height = mount.clientHeight;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+//     const scene = new THREE.Scene();
+//     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+//     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-    mount.appendChild(renderer.domElement);
-    camera.position.z = 80;
+//     renderer.setSize(width, height);
+//     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+//     renderer.setClearColor(0x000000, 0);
+//     mount.appendChild(renderer.domElement);
+//     camera.position.z = 80;
 
-    // Particles
-    const COUNT = 140;
-    const positions = new Float32Array(COUNT * 3);
-    const velocities = [];
+//     // Particles
+//     const COUNT = 140;
+//     const positions = new Float32Array(COUNT * 3);
+//     const velocities = [];
 
-    for (let i = 0; i < COUNT; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 200;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 200;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
-      velocities.push(
-        new THREE.Vector3(
-          (Math.random() - 0.5) * 0.07,
-          (Math.random() - 0.5) * 0.07,
-          (Math.random() - 0.5) * 0.07,
-        ),
-      );
-    }
+//     for (let i = 0; i < COUNT; i++) {
+//       positions[i * 3] = (Math.random() - 0.5) * 200;
+//       positions[i * 3 + 1] = (Math.random() - 0.5) * 200;
+//       positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+//       velocities.push(
+//         new THREE.Vector3(
+//           (Math.random() - 0.5) * 0.07,
+//           (Math.random() - 0.5) * 0.07,
+//           (Math.random() - 0.5) * 0.07,
+//         ),
+//       );
+//     }
 
-    const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    const pMat = new THREE.PointsMaterial({
-      color: 0xe8c44a,
-      size: 0.9,
-      transparent: true,
-      opacity: 0.75,
-      sizeAttenuation: true,
-    });
-    const points = new THREE.Points(pGeo, pMat);
-    scene.add(points);
+//     const pGeo = new THREE.BufferGeometry();
+//     pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+//     const pMat = new THREE.PointsMaterial({
+//       color: 0xe8c44a,
+//       size: 0.9,
+//       transparent: true,
+//       opacity: 0.75,
+//       sizeAttenuation: true,
+//     });
+//     const points = new THREE.Points(pGeo, pMat);
+//     scene.add(points);
 
-    // Lines
-    const lGeo = new THREE.BufferGeometry();
-    const lPos = new Float32Array(COUNT * COUNT * 6);
-    lGeo.setAttribute("position", new THREE.BufferAttribute(lPos, 3));
-    const lines = new THREE.LineSegments(
-      lGeo,
-      new THREE.LineBasicMaterial({
-        color: 0xe8c44a,
-        transparent: true,
-        opacity: 0.07,
-      }),
-    );
-    scene.add(lines);
+//     // Lines
+//     const lGeo = new THREE.BufferGeometry();
+//     const lPos = new Float32Array(COUNT * COUNT * 6);
+//     lGeo.setAttribute("position", new THREE.BufferAttribute(lPos, 3));
+//     const lines = new THREE.LineSegments(
+//       lGeo,
+//       new THREE.LineBasicMaterial({
+//         color: 0xe8c44a,
+//         transparent: true,
+//         opacity: 0.07,
+//       }),
+//     );
+//     scene.add(lines);
 
-    // Rings
-    const ring1 = new THREE.Mesh(
-      new THREE.TorusGeometry(20, 0.35, 8, 80),
-      new THREE.MeshBasicMaterial({
-        color: 0xe8c44a,
-        transparent: true,
-        opacity: 0.1,
-        wireframe: true,
-      }),
-    );
-    scene.add(ring1);
+//     // Rings
+//     const ring1 = new THREE.Mesh(
+//       new THREE.TorusGeometry(20, 0.35, 8, 80),
+//       new THREE.MeshBasicMaterial({
+//         color: 0xe8c44a,
+//         transparent: true,
+//         opacity: 0.1,
+//         wireframe: true,
+//       }),
+//     );
+//     scene.add(ring1);
 
-    const ring2 = new THREE.Mesh(
-      new THREE.TorusGeometry(32, 0.18, 6, 100),
-      new THREE.MeshBasicMaterial({
-        color: 0xe8c44a,
-        transparent: true,
-        opacity: 0.05,
-        wireframe: true,
-      }),
-    );
-    ring2.rotation.x = Math.PI / 2.5;
-    scene.add(ring2);
+//     const ring2 = new THREE.Mesh(
+//       new THREE.TorusGeometry(32, 0.18, 6, 100),
+//       new THREE.MeshBasicMaterial({
+//         color: 0xe8c44a,
+//         transparent: true,
+//         opacity: 0.05,
+//         wireframe: true,
+//       }),
+//     );
+//     ring2.rotation.x = Math.PI / 2.5;
+//     scene.add(ring2);
 
-    // Dumbbell-like shape (two spheres + cylinder)
-    const sphereMat = new THREE.MeshBasicMaterial({
-      color: 0xe8c44a,
-      transparent: true,
-      opacity: 0.08,
-      wireframe: true,
-    });
-    const s1 = new THREE.Mesh(new THREE.SphereGeometry(4, 8, 8), sphereMat);
-    s1.position.set(-22, 8, -20);
-    scene.add(s1);
-    const s2 = new THREE.Mesh(new THREE.SphereGeometry(4, 8, 8), sphereMat);
-    s2.position.set(22, -8, -20);
-    scene.add(s2);
+//     // Dumbbell-like shape (two spheres + cylinder)
+//     const sphereMat = new THREE.MeshBasicMaterial({
+//       color: 0xe8c44a,
+//       transparent: true,
+//       opacity: 0.08,
+//       wireframe: true,
+//     });
+//     const s1 = new THREE.Mesh(new THREE.SphereGeometry(4, 8, 8), sphereMat);
+//     s1.position.set(-22, 8, -20);
+//     scene.add(s1);
+//     const s2 = new THREE.Mesh(new THREE.SphereGeometry(4, 8, 8), sphereMat);
+//     s2.position.set(22, -8, -20);
+//     scene.add(s2);
 
-    const mouse = { x: 0, y: 0 };
-    const onMouse = (e) => {
-      mouse.x = (e.clientX / window.innerWidth - 0.5) * 0.25;
-      mouse.y = (e.clientY / window.innerHeight - 0.5) * 0.25;
-    };
-    window.addEventListener("mousemove", onMouse);
+//     const mouse = { x: 0, y: 0 };
+//     const onMouse = (e) => {
+//       mouse.x = (e.clientX / window.innerWidth - 0.5) * 0.25;
+//       mouse.y = (e.clientY / window.innerHeight - 0.5) * 0.25;
+//     };
+//     window.addEventListener("mousemove", onMouse);
 
-    let id;
-    const pos = pGeo.attributes.position.array;
+//     let id;
+//     const pos = pGeo.attributes.position.array;
 
-    const animate = () => {
-      id = requestAnimationFrame(animate);
+//     const animate = () => {
+//       id = requestAnimationFrame(animate);
 
-      for (let i = 0; i < COUNT; i++) {
-        pos[i * 3] += velocities[i].x;
-        pos[i * 3 + 1] += velocities[i].y;
-        pos[i * 3 + 2] += velocities[i].z;
-        if (Math.abs(pos[i * 3]) > 100) velocities[i].x *= -1;
-        if (Math.abs(pos[i * 3 + 1]) > 100) velocities[i].y *= -1;
-        if (Math.abs(pos[i * 3 + 2]) > 100) velocities[i].z *= -1;
-      }
-      pGeo.attributes.position.needsUpdate = true;
+//       for (let i = 0; i < COUNT; i++) {
+//         pos[i * 3] += velocities[i].x;
+//         pos[i * 3 + 1] += velocities[i].y;
+//         pos[i * 3 + 2] += velocities[i].z;
+//         if (Math.abs(pos[i * 3]) > 100) velocities[i].x *= -1;
+//         if (Math.abs(pos[i * 3 + 1]) > 100) velocities[i].y *= -1;
+//         if (Math.abs(pos[i * 3 + 2]) > 100) velocities[i].z *= -1;
+//       }
+//       pGeo.attributes.position.needsUpdate = true;
 
-      let li = 0;
-      for (let i = 0; i < COUNT; i++) {
-        for (let j = i + 1; j < COUNT; j++) {
-          const dx = pos[i * 3] - pos[j * 3],
-            dy = pos[i * 3 + 1] - pos[j * 3 + 1],
-            dz = pos[i * 3 + 2] - pos[j * 3 + 2];
-          if (Math.sqrt(dx * dx + dy * dy + dz * dz) < 28) {
-            lPos[li++] = pos[i * 3];
-            lPos[li++] = pos[i * 3 + 1];
-            lPos[li++] = pos[i * 3 + 2];
-            lPos[li++] = pos[j * 3];
-            lPos[li++] = pos[j * 3 + 1];
-            lPos[li++] = pos[j * 3 + 2];
-          }
-        }
-      }
-      lGeo.attributes.position.needsUpdate = true;
-      lGeo.setDrawRange(0, li / 3);
+//       let li = 0;
+//       for (let i = 0; i < COUNT; i++) {
+//         for (let j = i + 1; j < COUNT; j++) {
+//           const dx = pos[i * 3] - pos[j * 3],
+//             dy = pos[i * 3 + 1] - pos[j * 3 + 1],
+//             dz = pos[i * 3 + 2] - pos[j * 3 + 2];
+//           if (Math.sqrt(dx * dx + dy * dy + dz * dz) < 28) {
+//             lPos[li++] = pos[i * 3];
+//             lPos[li++] = pos[i * 3 + 1];
+//             lPos[li++] = pos[i * 3 + 2];
+//             lPos[li++] = pos[j * 3];
+//             lPos[li++] = pos[j * 3 + 1];
+//             lPos[li++] = pos[j * 3 + 2];
+//           }
+//         }
+//       }
+//       lGeo.attributes.position.needsUpdate = true;
+//       lGeo.setDrawRange(0, li / 3);
 
-      ring1.rotation.x += 0.003;
-      ring1.rotation.y += 0.005;
-      ring2.rotation.z += 0.002;
-      s1.rotation.y += 0.008;
-      s2.rotation.x += 0.006;
+//       ring1.rotation.x += 0.003;
+//       ring1.rotation.y += 0.005;
+//       ring2.rotation.z += 0.002;
+//       s1.rotation.y += 0.008;
+//       s2.rotation.x += 0.006;
 
-      camera.position.x += (mouse.x * 18 - camera.position.x) * 0.02;
-      camera.position.y += (-mouse.y * 18 - camera.position.y) * 0.02;
-      camera.lookAt(scene.position);
-      renderer.render(scene, camera);
-    };
-    animate();
+//       camera.position.x += (mouse.x * 18 - camera.position.x) * 0.02;
+//       camera.position.y += (-mouse.y * 18 - camera.position.y) * 0.02;
+//       camera.lookAt(scene.position);
+//       renderer.render(scene, camera);
+//     };
+//     animate();
 
-    const onResize = () => {
-      const w = mount.clientWidth,
-        h = mount.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener("resize", onResize);
+//     const onResize = () => {
+//       const w = mount.clientWidth,
+//         h = mount.clientHeight;
+//       camera.aspect = w / h;
+//       camera.updateProjectionMatrix();
+//       renderer.setSize(w, h);
+//     };
+//     window.addEventListener("resize", onResize);
 
-    return () => {
-      cancelAnimationFrame(id);
-      window.removeEventListener("mousemove", onMouse);
-      window.removeEventListener("resize", onResize);
-      if (mount.contains(renderer.domElement))
-        mount.removeChild(renderer.domElement);
-      renderer.dispose();
-    };
-  }, []);
+//     return () => {
+//       cancelAnimationFrame(id);
+//       window.removeEventListener("mousemove", onMouse);
+//       window.removeEventListener("resize", onResize);
+//       if (mount.contains(renderer.domElement))
+//         mount.removeChild(renderer.domElement);
+//       renderer.dispose();
+//     };
+//   }, []);
 
-  return (
-    <div
-      ref={mountRef}
-      style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-    />
-  );
-}
+//   return (
+//     <div
+//       ref={mountRef}
+//       style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+//     />
+//   );
+// }
 
 // =============================================================================
 // Reusable Section Label
