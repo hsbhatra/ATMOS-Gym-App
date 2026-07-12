@@ -20,89 +20,7 @@ import {
   changePassword,
 } from "../../services/authService.js";
 import ParticleBackground from "../../components/three/ParticleBackground.jsx";
-
-// =============================================================================
-// ParticleBackground
-// =============================================================================
-// function ParticleBackground() {
-//   const mountRef = useRef(null);
-//   useEffect(() => {
-//     const mount = mountRef.current;
-//     const scene    = new THREE.Scene();
-//     const camera   = new THREE.PerspectiveCamera(75, mount.clientWidth / mount.clientHeight, 0.1, 1000);
-//     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-//     renderer.setSize(mount.clientWidth, mount.clientHeight);
-//     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-//     renderer.setClearColor(0x000000, 0);
-//     mount.appendChild(renderer.domElement);
-//     camera.position.z = 80;
-
-//     const COUNT = 80;
-//     const positions = new Float32Array(COUNT * 3);
-//     const velocities = [];
-//     for (let i = 0; i < COUNT; i++) {
-//       positions[i*3]   = (Math.random() - 0.5) * 200;
-//       positions[i*3+1] = (Math.random() - 0.5) * 200;
-//       positions[i*3+2] = (Math.random() - 0.5) * 200;
-//       velocities.push(new THREE.Vector3(
-//         (Math.random() - 0.5) * 0.05,
-//         (Math.random() - 0.5) * 0.05,
-//         (Math.random() - 0.5) * 0.05
-//       ));
-//     }
-//     const pGeo = new THREE.BufferGeometry();
-//     pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-//     scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xe8c44a, size: 0.7, transparent: true, opacity: 0.5, sizeAttenuation: true })));
-
-//     const lGeo = new THREE.BufferGeometry();
-//     const lPos = new Float32Array(COUNT * COUNT * 6);
-//     lGeo.setAttribute("position", new THREE.BufferAttribute(lPos, 3));
-//     scene.add(new THREE.LineSegments(lGeo, new THREE.LineBasicMaterial({ color: 0xe8c44a, transparent: true, opacity: 0.04 })));
-
-//     let id;
-//     const pos = pGeo.attributes.position.array;
-//     const animate = () => {
-//       id = requestAnimationFrame(animate);
-//       for (let i = 0; i < COUNT; i++) {
-//         pos[i*3]   += velocities[i].x;
-//         pos[i*3+1] += velocities[i].y;
-//         pos[i*3+2] += velocities[i].z;
-//         if (Math.abs(pos[i*3])   > 100) velocities[i].x *= -1;
-//         if (Math.abs(pos[i*3+1]) > 100) velocities[i].y *= -1;
-//         if (Math.abs(pos[i*3+2]) > 100) velocities[i].z *= -1;
-//       }
-//       pGeo.attributes.position.needsUpdate = true;
-//       let li = 0;
-//       for (let i = 0; i < COUNT; i++) {
-//         for (let j = i + 1; j < COUNT; j++) {
-//           const dx = pos[i*3]-pos[j*3], dy = pos[i*3+1]-pos[j*3+1], dz = pos[i*3+2]-pos[j*3+2];
-//           if (Math.sqrt(dx*dx+dy*dy+dz*dz) < 28) {
-//             lPos[li++]=pos[i*3]; lPos[li++]=pos[i*3+1]; lPos[li++]=pos[i*3+2];
-//             lPos[li++]=pos[j*3]; lPos[li++]=pos[j*3+1]; lPos[li++]=pos[j*3+2];
-//           }
-//         }
-//       }
-//       lGeo.attributes.position.needsUpdate = true;
-//       lGeo.setDrawRange(0, li / 3);
-//       renderer.render(scene, camera);
-//     };
-//     animate();
-
-//     const onResize = () => {
-//       camera.aspect = mount.clientWidth / mount.clientHeight;
-//       camera.updateProjectionMatrix();
-//       renderer.setSize(mount.clientWidth, mount.clientHeight);
-//     };
-//     window.addEventListener("resize", onResize);
-//     return () => {
-//       cancelAnimationFrame(id);
-//       window.removeEventListener("resize", onResize);
-//       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
-//       renderer.dispose();
-//     };
-//   }, []);
-//   return <div ref={mountRef} style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }} />;
-// }
+import Logo from "../../components/ui/Logo.jsx";
 
 // =============================================================================
 // Confirm Dialog
@@ -1495,41 +1413,7 @@ export default function ProfilePage() {
           borderBottom: "1px solid rgba(255,255,255,0.05)",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            cursor: "pointer",
-          }}
-          onClick={() => navigate("/")}
-        >
-          <div
-            style={{
-              width: "32px",
-              height: "32px",
-              borderRadius: "8px",
-              background: "#e8c44a",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "900",
-              color: "#0a0a0a",
-              fontSize: "16px",
-            }}
-          >
-            H
-          </div>
-          <span
-            style={{
-              fontWeight: "800",
-              fontSize: "16px",
-              letterSpacing: "1.5px",
-            }}
-          >
-            HULK <span style={{ color: "#e8c44a" }}>GYM</span>
-          </span>
-        </div>
+        <Logo size="md" />
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           {user && (
             <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)" }}>

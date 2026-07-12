@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
 import { useAuthStore } from "../store/authStore.js";
 import ParticleBackground from "../components/three/ParticleBackground.jsx";
+import Logo from "../components/ui/Logo.jsx";
 
 // =============================================================================
 // ParticleBackground — Three.js 3D animated background
@@ -445,40 +446,8 @@ export default function LandingPage() {
         }}
       >
         {/* Logo */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            cursor: "pointer",
-          }}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          <div
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "8px",
-              background: "#e8c44a",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "900",
-              color: "#0a0a0a",
-              fontSize: "18px",
-            }}
-          >
-            H
-          </div>
-          <span
-            style={{
-              fontWeight: "800",
-              fontSize: "17px",
-              letterSpacing: "1.5px",
-            }}
-          >
-            HULK <span style={{ color: "#e8c44a" }}>GYM</span>
-          </span>
+        <div onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+          <Logo size="md" clickable={false} />
         </div>
 
         {/* Nav Links — desktop only */}
@@ -1772,25 +1741,8 @@ export default function LandingPage() {
                   marginBottom: "16px",
                 }}
               >
-                <div
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    borderRadius: "7px",
-                    background: "#e8c44a",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: "900",
-                    color: "#0a0a0a",
-                    fontSize: "16px",
-                  }}
-                >
-                  H
-                </div>
-                <span style={{ fontWeight: "800", letterSpacing: "1.5px" }}>
-                  HULK <span style={{ color: "#e8c44a" }}>GYM</span>
-                </span>
+                {/* Logo */}
+                <Logo size="sm" clickable={false} style={{marginBottom: "16px"}} />
               </div>
               <p
                 style={{
@@ -1866,7 +1818,7 @@ export default function LandingPage() {
             }}
           >
             <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)" }}>
-              © {new Date().getFullYear()} Hulk Gym Pvt. Ltd. All rights
+              © {new Date().getFullYear()} ATMOS Gym Pvt. Ltd. All rights
               reserved.
             </span>
             <div style={{ display: "flex", gap: "20px" }}>
