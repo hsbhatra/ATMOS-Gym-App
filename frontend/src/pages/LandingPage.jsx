@@ -9,192 +9,7 @@ import { useAuthStore } from "../store/authStore.js";
 import ParticleBackground from "../components/three/ParticleBackground.jsx";
 import Logo from "../components/ui/Logo.jsx";
 import Navbar from "../components/layout/Navbar.jsx";
-
-// =============================================================================
-// ParticleBackground — Three.js 3D animated background
-// =============================================================================
-
-// function ParticleBackground() {
-//   const mountRef = useRef(null);
-
-//   useEffect(() => {
-//     const mount = mountRef.current;
-//     const width = mount.clientWidth;
-//     const height = mount.clientHeight;
-
-//     const scene = new THREE.Scene();
-//     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-//     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-
-//     renderer.setSize(width, height);
-//     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-//     renderer.setClearColor(0x000000, 0);
-//     mount.appendChild(renderer.domElement);
-//     camera.position.z = 80;
-
-//     // Particles
-//     const COUNT = 140;
-//     const positions = new Float32Array(COUNT * 3);
-//     const velocities = [];
-
-//     for (let i = 0; i < COUNT; i++) {
-//       positions[i * 3] = (Math.random() - 0.5) * 200;
-//       positions[i * 3 + 1] = (Math.random() - 0.5) * 200;
-//       positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
-//       velocities.push(
-//         new THREE.Vector3(
-//           (Math.random() - 0.5) * 0.07,
-//           (Math.random() - 0.5) * 0.07,
-//           (Math.random() - 0.5) * 0.07,
-//         ),
-//       );
-//     }
-
-//     const pGeo = new THREE.BufferGeometry();
-//     pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-//     const pMat = new THREE.PointsMaterial({
-//       color: 0xe8c44a,
-//       size: 0.9,
-//       transparent: true,
-//       opacity: 0.75,
-//       sizeAttenuation: true,
-//     });
-//     const points = new THREE.Points(pGeo, pMat);
-//     scene.add(points);
-
-//     // Lines
-//     const lGeo = new THREE.BufferGeometry();
-//     const lPos = new Float32Array(COUNT * COUNT * 6);
-//     lGeo.setAttribute("position", new THREE.BufferAttribute(lPos, 3));
-//     const lines = new THREE.LineSegments(
-//       lGeo,
-//       new THREE.LineBasicMaterial({
-//         color: 0xe8c44a,
-//         transparent: true,
-//         opacity: 0.07,
-//       }),
-//     );
-//     scene.add(lines);
-
-//     // Rings
-//     const ring1 = new THREE.Mesh(
-//       new THREE.TorusGeometry(20, 0.35, 8, 80),
-//       new THREE.MeshBasicMaterial({
-//         color: 0xe8c44a,
-//         transparent: true,
-//         opacity: 0.1,
-//         wireframe: true,
-//       }),
-//     );
-//     scene.add(ring1);
-
-//     const ring2 = new THREE.Mesh(
-//       new THREE.TorusGeometry(32, 0.18, 6, 100),
-//       new THREE.MeshBasicMaterial({
-//         color: 0xe8c44a,
-//         transparent: true,
-//         opacity: 0.05,
-//         wireframe: true,
-//       }),
-//     );
-//     ring2.rotation.x = Math.PI / 2.5;
-//     scene.add(ring2);
-
-//     // Dumbbell-like shape (two spheres + cylinder)
-//     const sphereMat = new THREE.MeshBasicMaterial({
-//       color: 0xe8c44a,
-//       transparent: true,
-//       opacity: 0.08,
-//       wireframe: true,
-//     });
-//     const s1 = new THREE.Mesh(new THREE.SphereGeometry(4, 8, 8), sphereMat);
-//     s1.position.set(-22, 8, -20);
-//     scene.add(s1);
-//     const s2 = new THREE.Mesh(new THREE.SphereGeometry(4, 8, 8), sphereMat);
-//     s2.position.set(22, -8, -20);
-//     scene.add(s2);
-
-//     const mouse = { x: 0, y: 0 };
-//     const onMouse = (e) => {
-//       mouse.x = (e.clientX / window.innerWidth - 0.5) * 0.25;
-//       mouse.y = (e.clientY / window.innerHeight - 0.5) * 0.25;
-//     };
-//     window.addEventListener("mousemove", onMouse);
-
-//     let id;
-//     const pos = pGeo.attributes.position.array;
-
-//     const animate = () => {
-//       id = requestAnimationFrame(animate);
-
-//       for (let i = 0; i < COUNT; i++) {
-//         pos[i * 3] += velocities[i].x;
-//         pos[i * 3 + 1] += velocities[i].y;
-//         pos[i * 3 + 2] += velocities[i].z;
-//         if (Math.abs(pos[i * 3]) > 100) velocities[i].x *= -1;
-//         if (Math.abs(pos[i * 3 + 1]) > 100) velocities[i].y *= -1;
-//         if (Math.abs(pos[i * 3 + 2]) > 100) velocities[i].z *= -1;
-//       }
-//       pGeo.attributes.position.needsUpdate = true;
-
-//       let li = 0;
-//       for (let i = 0; i < COUNT; i++) {
-//         for (let j = i + 1; j < COUNT; j++) {
-//           const dx = pos[i * 3] - pos[j * 3],
-//             dy = pos[i * 3 + 1] - pos[j * 3 + 1],
-//             dz = pos[i * 3 + 2] - pos[j * 3 + 2];
-//           if (Math.sqrt(dx * dx + dy * dy + dz * dz) < 28) {
-//             lPos[li++] = pos[i * 3];
-//             lPos[li++] = pos[i * 3 + 1];
-//             lPos[li++] = pos[i * 3 + 2];
-//             lPos[li++] = pos[j * 3];
-//             lPos[li++] = pos[j * 3 + 1];
-//             lPos[li++] = pos[j * 3 + 2];
-//           }
-//         }
-//       }
-//       lGeo.attributes.position.needsUpdate = true;
-//       lGeo.setDrawRange(0, li / 3);
-
-//       ring1.rotation.x += 0.003;
-//       ring1.rotation.y += 0.005;
-//       ring2.rotation.z += 0.002;
-//       s1.rotation.y += 0.008;
-//       s2.rotation.x += 0.006;
-
-//       camera.position.x += (mouse.x * 18 - camera.position.x) * 0.02;
-//       camera.position.y += (-mouse.y * 18 - camera.position.y) * 0.02;
-//       camera.lookAt(scene.position);
-//       renderer.render(scene, camera);
-//     };
-//     animate();
-
-//     const onResize = () => {
-//       const w = mount.clientWidth,
-//         h = mount.clientHeight;
-//       camera.aspect = w / h;
-//       camera.updateProjectionMatrix();
-//       renderer.setSize(w, h);
-//     };
-//     window.addEventListener("resize", onResize);
-
-//     return () => {
-//       cancelAnimationFrame(id);
-//       window.removeEventListener("mousemove", onMouse);
-//       window.removeEventListener("resize", onResize);
-//       if (mount.contains(renderer.domElement))
-//         mount.removeChild(renderer.domElement);
-//       renderer.dispose();
-//     };
-//   }, []);
-
-//   return (
-//     <div
-//       ref={mountRef}
-//       style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-//     />
-//   );
-// }
+import Footer from "../components/layout/Footer.jsx";
 
 // =============================================================================
 // Reusable Section Label
@@ -423,6 +238,7 @@ export default function LandingPage() {
 
       {/* ══ HERO ════════════════════════════════════════════════════════════════ */}
       <section
+        className="hero-section"
         style={{
           position: "relative",
           height: "100vh",
@@ -432,8 +248,6 @@ export default function LandingPage() {
           paddingTop: "350px",
         }}
       >
-        {/* <ParticleBackground /> */}
-
         <div
           style={{
             position: "absolute",
@@ -529,14 +343,7 @@ export default function LandingPage() {
             our doors.
           </p>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "14px",
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="hero-cta">
             <button
               onClick={() => navigate("/register")}
               className="btn-gold"
@@ -559,15 +366,7 @@ export default function LandingPage() {
           </div>
 
           {/* Stats */}
-          <div
-            style={{
-              display: "flex",
-              gap: "0",
-              justifyContent: "center",
-              marginTop: "70px",
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="hero-stats">
             {[
               ["10,000+", "Members Transformed"],
               ["48", "Expert Trainers"],
@@ -576,14 +375,8 @@ export default function LandingPage() {
             ].map(([num, label], i, arr) => (
               <div
                 key={label}
-                style={{
-                  textAlign: "center",
-                  padding: "0 32px",
-                  borderRight:
-                    i < arr.length - 1
-                      ? "1px solid rgba(255,255,255,0.08)"
-                      : "none",
-                }}
+                className="stat-item"
+                style={{ textAlign: "center" }}
               >
                 <div
                   style={{
@@ -613,6 +406,7 @@ export default function LandingPage() {
 
         {/* Scroll indicator */}
         <div
+          className="scroll-indicator"
           style={{
             position: "absolute",
             bottom: "32px",
@@ -636,7 +430,8 @@ export default function LandingPage() {
       {/* ══ PROGRAMS ════════════════════════════════════════════════════════════ */}
       <section
         id="programs"
-        style={{ padding: "120px 1.5rem", position: "relative" }}
+        className="section-pad"
+        style={{ position: "relative" }}
       >
         {/* Background glow */}
         <div
@@ -686,13 +481,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "16px",
-            }}
-          >
+          <div className="grid-auto">
             {programs.map((p) => (
               <div
                 key={p.title}
@@ -784,13 +573,7 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "2px",
-            }}
-          >
+          <div className="stats-grid">
             {transformations.map((t, i) => (
               <div
                 key={i}
@@ -832,7 +615,7 @@ export default function LandingPage() {
       </section>
 
       {/* ══ TRAINERS ════════════════════════════════════════════════════════════ */}
-      <section id="trainers" style={{ padding: "120px 1.5rem" }}>
+      <section id="trainers" className="section-pad">
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "64px" }}>
             <SectionLabel text="Meet the Team" />
@@ -859,13 +642,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "20px",
-            }}
-          >
+          <div className="grid-3">
             {trainers.map((t) => (
               <div
                 key={t.name}
@@ -990,14 +767,7 @@ export default function LandingPage() {
         }}
       >
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "80px",
-              alignItems: "center",
-            }}
-          >
+          <div className="equipment-layout">
             {/* Left */}
             <div>
               <SectionLabel text="World Class Facility" />
@@ -1097,7 +867,7 @@ export default function LandingPage() {
       </section>
 
       {/* ══ PRICING ═════════════════════════════════════════════════════════════ */}
-      <section id="pricing" style={{ padding: "120px 1.5rem" }}>
+      <section id="pricing" className="section-pad">
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "64px" }}>
             <SectionLabel text="Membership Plans" />
@@ -1117,17 +887,11 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "20px",
-              alignItems: "start",
-            }}
-          >
+          <div className="pricing-grid">
             {plans.map((p) => (
               <div
                 key={p.name}
+                className={p.highlight ? "pricing-card--featured" : ""}
                 style={{
                   padding: "36px 28px",
                   borderRadius: "20px",
@@ -1305,13 +1069,7 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "20px",
-            }}
-          >
+          <div className="grid-3">
             {testimonials.map((t) => (
               <div
                 key={t.name}
@@ -1496,135 +1254,7 @@ export default function LandingPage() {
       </section>
 
       {/* ══ FOOTER ══════════════════════════════════════════════════════════════ */}
-      <footer
-        style={{
-          borderTop: "1px solid rgba(255,255,255,0.05)",
-          padding: "48px 1.5rem 32px",
-        }}
-      >
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "2fr 1fr 1fr 1fr",
-              gap: "48px",
-              marginBottom: "48px",
-            }}
-          >
-            {/* Brand */}
-            <div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  marginBottom: "16px",
-                }}
-              >
-                {/* Logo */}
-                <Logo size="sm" clickable={false} style={{marginBottom: "16px"}} />
-              </div>
-              <p
-                style={{
-                  fontSize: "13px",
-                  color: "rgba(255,255,255,0.35)",
-                  lineHeight: "1.8",
-                  maxWidth: "260px",
-                }}
-              >
-                India's premier fitness destination. Forging legends since 2009.
-              </p>
-            </div>
-
-            {/* Links */}
-            {[
-              {
-                title: "Company",
-                links: ["About Us", "Careers", "Press", "Blog"],
-              },
-              {
-                title: "Programs",
-                links: ["Strength", "Cardio", "HIIT", "Yoga", "Boxing"],
-              },
-              {
-                title: "Support",
-                links: ["Contact", "FAQs", "Privacy Policy", "Terms"],
-              },
-            ].map((col) => (
-              <div key={col.title}>
-                <h4
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "700",
-                    letterSpacing: "2px",
-                    color: "rgba(255,255,255,0.5)",
-                    textTransform: "uppercase",
-                    marginBottom: "16px",
-                  }}
-                >
-                  {col.title}
-                </h4>
-                {col.links.map((l) => (
-                  <p
-                    key={l}
-                    style={{
-                      fontSize: "13px",
-                      color: "rgba(255,255,255,0.3)",
-                      marginBottom: "10px",
-                      cursor: "pointer",
-                      transition: "color 0.2s",
-                    }}
-                    onMouseEnter={(e) => (e.target.style.color = "#e8c44a")}
-                    onMouseLeave={(e) =>
-                      (e.target.style.color = "rgba(255,255,255,0.3)")
-                    }
-                  >
-                    {l}
-                  </p>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          <div
-            style={{
-              borderTop: "1px solid rgba(255,255,255,0.05)",
-              paddingTop: "24px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: "12px",
-            }}
-          >
-            <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)" }}>
-              © {new Date().getFullYear()} ATMOS Gym Pvt. Ltd. All rights
-              reserved.
-            </span>
-            <div style={{ display: "flex", gap: "20px" }}>
-              {["💪 Instagram", "🐦 Twitter", "📘 Facebook", "▶️ YouTube"].map(
-                (s) => (
-                  <span
-                    key={s}
-                    style={{
-                      fontSize: "12px",
-                      color: "rgba(255,255,255,0.3)",
-                      cursor: "pointer",
-                      transition: "color 0.2s",
-                    }}
-                    onMouseEnter={(e) => (e.target.style.color = "#e8c44a")}
-                    onMouseLeave={(e) =>
-                      (e.target.style.color = "rgba(255,255,255,0.3)")
-                    }
-                  >
-                    {s}
-                  </span>
-                ),
-              )}
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

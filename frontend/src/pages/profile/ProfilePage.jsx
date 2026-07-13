@@ -21,85 +21,7 @@ import {
 } from "../../services/authService.js";
 import ParticleBackground from "../../components/three/ParticleBackground.jsx";
 import Logo from "../../components/ui/Logo.jsx";
-
-// =============================================================================
-// Confirm Dialog
-// =============================================================================
-function ConfirmDialog({ message, onConfirm, onCancel }) {
-  return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 200,
-        background: "rgba(0,0,0,0.7)",
-        backdropFilter: "blur(8px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-      }}
-    >
-      <div
-        style={{
-          background: "#111",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: "20px",
-          padding: "36px",
-          maxWidth: "400px",
-          width: "100%",
-          textAlign: "center",
-        }}
-        className="page-enter"
-      >
-        <div style={{ fontSize: "40px", marginBottom: "16px" }}>⚠️</div>
-        <h3
-          style={{ fontSize: "18px", fontWeight: "700", marginBottom: "12px" }}
-        >
-          Are you sure?
-        </h3>
-        <p
-          style={{
-            fontSize: "14px",
-            color: "rgba(255,255,255,0.5)",
-            marginBottom: "28px",
-            lineHeight: "1.6",
-          }}
-        >
-          {message}
-        </p>
-        <div style={{ display: "flex", gap: "12px" }}>
-          <button
-            onClick={onCancel}
-            className="btn-ghost"
-            style={{ flex: 1, padding: "12px" }}
-          >
-            No, cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            style={{
-              flex: 1,
-              padding: "12px",
-              borderRadius: "10px",
-              border: "none",
-              background: "#ef4444",
-              color: "white",
-              fontWeight: "600",
-              fontSize: "14px",
-              cursor: "pointer",
-              transition: "background 0.2s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#dc2626")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#ef4444")}
-          >
-            Yes, proceed
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+import ConfirmDialog from "../../components/ui/ConfirmDialog.jsx";
 
 // =============================================================================
 // ProfileSection
@@ -208,18 +130,7 @@ function ProfileSection({ user, onUpdate }) {
   return (
     <div>
       {/* Avatar row */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "24px",
-          marginBottom: "36px",
-          padding: "24px",
-          background: "rgba(255,255,255,0.02)",
-          borderRadius: "16px",
-          border: "1px solid rgba(255,255,255,0.05)",
-        }}
-      >
+      <div className="profile-avatar-row">
         {/* Avatar */}
         <div style={{ position: "relative", flexShrink: 0 }}>
           <div
@@ -332,7 +243,10 @@ function ProfileSection({ user, onUpdate }) {
         </div>
 
         {/* Picture actions */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div
+          className="avatar-actions"
+          style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+        >
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
@@ -446,13 +360,7 @@ function ProfileSection({ user, onUpdate }) {
             )}
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "14px",
-            }}
-          >
+          <div className="profile-form-grid">
             {/* First Name */}
             <div>
               <label style={labelStyle}>First Name</label>
@@ -555,13 +463,7 @@ function ProfileSection({ user, onUpdate }) {
           >
             Body Information
           </h3>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "14px",
-            }}
-          >
+          <div className="profile-form-grid">
             {/* Height */}
             <div>
               <label style={labelStyle}>Height (cm)</label>
@@ -913,12 +815,8 @@ function SessionsSection({ onLogout }) {
           {sessions.map((s) => (
             <div
               key={s._id}
+              className="session-card"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                padding: "18px 20px",
-                borderRadius: "14px",
                 background: s.isCurrent
                   ? "rgba(232,196,74,0.05)"
                   : "rgba(255,255,255,0.02)",
@@ -1012,6 +910,7 @@ function SessionsSection({ onLogout }) {
 
               {/* End Session */}
               <button
+                className="session-end-btn"
                 onClick={() => setConfirm({ type: "single", sessionId: s._id })}
                 disabled={revoking === s._id}
                 style={{
@@ -1435,16 +1334,12 @@ export default function ProfilePage() {
 
       {/* ── Main Layout ── */}
       <div
-        style={{
-          paddingTop: "60px",
-          minHeight: "100vh",
-          display: "flex",
-          position: "relative",
-          zIndex: 1,
-        }}
+        className="profile-layout"
+        style={{ paddingTop: "60px", position: "relative", zIndex: 1 }}
       >
         {/* ── Sidebar ── */}
         <aside
+          className="profile-sidebar"
           style={{
             width: "240px",
             flexShrink: 0,
@@ -1461,6 +1356,7 @@ export default function ProfilePage() {
           {/* User mini card */}
           {user && (
             <div
+              className="sidebar-mini-card"
               style={{
                 padding: "16px",
                 borderRadius: "12px",
@@ -1562,6 +1458,7 @@ export default function ProfilePage() {
 
           {/* Back to home */}
           <div
+            className="sidebar-back"
             style={{
               marginTop: "auto",
               paddingTop: "16px",
@@ -1588,6 +1485,7 @@ export default function ProfilePage() {
 
         {/* ── Content Area ── */}
         <main
+          className="profile-content"
           style={{
             flex: 1,
             padding: "40px 48px",

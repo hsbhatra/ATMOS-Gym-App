@@ -46,15 +46,8 @@ export default function LoginPage() {
 
   return (
     <div
-      style={{
-        minHeight: "100vh",
-        background: "#0a0a0a",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-        position: "relative",
-      }}
+      className="auth-page"
+      style={{ background: "#0a0a0a", position: "relative" }}
     >
       <ParticleBackground />
 
@@ -72,11 +65,10 @@ export default function LoginPage() {
 
       {/* Card */}
       <div
+        className="auth-card-wrapper page-enter"
         style={{
           position: "relative",
           zIndex: 1,
-          width: "100%",
-          maxWidth: "420px",
           background: "rgba(255,255,255,0.02)",
           border: "1px solid rgba(255,255,255,0.07)",
           borderRadius: "24px",
@@ -84,12 +76,15 @@ export default function LoginPage() {
           WebkitBackdropFilter: "blur(40px)",
           padding: "40px 36px",
         }}
-        className="page-enter"
       >
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
           <div style={{ marginBottom: "24px" }}>
-            <Logo size="md" clickable={false} style={{justifyContent: "center"}}/>
+            <Logo
+              size="md"
+              clickable={false}
+              style={{ justifyContent: "center" }}
+            />
           </div>
           <h1
             style={{
