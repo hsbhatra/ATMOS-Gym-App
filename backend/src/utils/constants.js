@@ -81,10 +81,10 @@ export const COOKIE_CONFIG = {
 };
 
 export const EMAIL_CONFIG = {
-  FROM_NAME: "Hulk Gym",
+  FROM_NAME: "ATMOS Gym",
   SUBJECTS: {
-    REGISTRATION_OTP: "Verify Your Hulk Gym Account",
-    FORGOT_PASSWORD_OTP: "Reset Your Hulk Gym Password",
+    REGISTRATION_OTP: "Verify Your ATMOS Gym Account",
+    FORGOT_PASSWORD_OTP: "Reset Your ATMOS Gym Password",
   },
   OTP_VALIDITY_TEXT: `${OTP_CONFIG.EXPIRY_MINUTES} minutes`,
 };

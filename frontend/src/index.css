@@ -228,3 +228,488 @@ nav, section, footer {
   0%, 100% { transform: scale(1);    opacity: 1;   }
   50%       { transform: scale(1.08); opacity: 0.8; }
 }
+
+/* =============================================================================
+   RESPONSIVE SYSTEM — Mobile First
+   Breakpoints:
+     sm:  480px+
+     md:  768px+
+     lg:  1024px+
+     xl:  1280px+
+============================================================================= */
+
+/* =============================================================================
+   BASE RESETS FOR ALL SCREEN SIZES
+============================================================================= */
+
+img, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prevent horizontal overflow on all pages */
+#root {
+  overflow-x: hidden;
+}
+
+/* =============================================================================
+   RESPONSIVE NAVBAR
+============================================================================= */
+
+/* Mobile: hide desktop nav, show hamburger */
+@media (max-width: 767px) {
+  .nav-links-desktop { display: none !important; }
+  .nav-cta-desktop   { display: none !important; }
+  .nav-hamburger     { display: flex !important; }
+}
+
+/* Desktop: hide hamburger, show desktop nav */
+@media (min-width: 768px) {
+  .nav-hamburger     { display: none !important; }
+  .nav-links-desktop { display: flex !important; }
+  .nav-cta-desktop   { display: flex !important; }
+}
+
+/* =============================================================================
+   RESPONSIVE TYPOGRAPHY
+============================================================================= */
+
+.hero-title {
+  font-size: clamp(36px, 8vw, 104px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -2px;
+}
+
+.section-title {
+  font-size: clamp(24px, 4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+}
+
+.section-subtitle {
+  font-size: clamp(14px, 2vw, 16px);
+  color: rgba(255,255,255,0.4);
+  line-height: 1.7;
+}
+
+/* =============================================================================
+   RESPONSIVE LAYOUT CONTAINERS
+============================================================================= */
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 480px)  { .container { padding: 0 24px; } }
+@media (min-width: 768px)  { .container { padding: 0 32px; } }
+@media (min-width: 1024px) { .container { padding: 0 48px; } }
+
+/* =============================================================================
+   RESPONSIVE SECTION PADDING
+============================================================================= */
+
+.section-pad {
+  padding: 60px 16px;
+}
+
+@media (min-width: 480px)  { .section-pad { padding: 80px 24px;  } }
+@media (min-width: 768px)  { .section-pad { padding: 100px 32px; } }
+@media (min-width: 1024px) { .section-pad { padding: 120px 48px; } }
+
+/* =============================================================================
+   RESPONSIVE GRID SYSTEMS
+============================================================================= */
+
+/* Auto grid — items decide minimum width */
+.grid-auto {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 480px) {
+  .grid-auto { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+}
+
+/* 2 column grid */
+.grid-2 {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+}
+
+/* 3 column grid */
+.grid-3 {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px)  { .grid-3 { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .grid-3 { grid-template-columns: 1fr 1fr 1fr; } }
+
+/* 4 column grid */
+.grid-4 {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (min-width: 1024px) { .grid-4 { grid-template-columns: repeat(4, 1fr); } }
+
+/* =============================================================================
+   RESPONSIVE FOOTER GRID
+============================================================================= */
+
+.footer-grid {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 1024px) {
+  .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
+}
+
+/* =============================================================================
+   RESPONSIVE HERO STATS ROW
+============================================================================= */
+
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+@media (min-width: 768px) {
+  .hero-stats {
+    gap: 0;
+    margin-top: 70px;
+  }
+
+  .hero-stats .stat-item {
+    border-right: 1px solid rgba(255,255,255,0.08);
+    padding: 0 32px;
+  }
+
+  .hero-stats .stat-item:last-child {
+    border-right: none;
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE PROFILE LAYOUT
+============================================================================= */
+
+.profile-layout {
+  display: flex;
+  min-height: calc(100vh - 60px);
+}
+
+/* Mobile: sidebar becomes top tabs */
+@media (max-width: 767px) {
+  .profile-layout {
+    flex-direction: column;
+  }
+
+  .profile-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    position: static !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    padding: 16px !important;
+    flex-direction: row !important;
+    overflow-x: auto;
+    gap: 8px;
+  }
+
+  .profile-sidebar .sidebar-mini-card {
+    display: none !important;
+  }
+
+  .profile-sidebar .sidebar-back {
+    display: none !important;
+  }
+
+  .profile-sidebar nav {
+    flex-direction: row !important;
+    gap: 6px !important;
+    flex: 1;
+  }
+
+  .profile-sidebar nav > div {
+    white-space: nowrap;
+    padding: 9px 14px !important;
+    font-size: 13px !important;
+  }
+
+  .profile-content {
+    padding: 24px 16px !important;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .profile-sidebar {
+    width: 200px !important;
+  }
+
+  .profile-content {
+    padding: 32px 24px !important;
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE PROFILE FORM GRID
+============================================================================= */
+
+.profile-form-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .profile-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE AUTH CARDS (login, register, otp)
+============================================================================= */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 16px 40px;
+}
+
+@media (min-width: 480px) {
+  .auth-page { padding: 80px 24px 40px; }
+}
+
+.auth-card-wrapper {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Register page is slightly wider */
+.auth-card-wrapper--wide {
+  max-width: 480px;
+}
+
+/* =============================================================================
+   RESPONSIVE PRICING CARDS
+============================================================================= */
+
+.pricing-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 640px) {
+  .pricing-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 1024px) {
+  .pricing-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* On mobile, "Most Popular" card doesn't scale up */
+@media (max-width: 1023px) {
+  .pricing-card--featured {
+    transform: none !important;
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE EQUIPMENT SECTION
+============================================================================= */
+
+.equipment-layout {
+  display: grid;
+  gap: 48px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .equipment-layout {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+
+.equipment-cards {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* =============================================================================
+   RESPONSIVE PROFILE AVATAR ROW
+============================================================================= */
+
+.profile-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 36px;
+  padding: 24px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+@media (max-width: 600px) {
+  .profile-avatar-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .profile-avatar-row .avatar-actions {
+    flex-direction: row !important;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE SESSION CARDS
+============================================================================= */
+
+.session-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 14px;
+}
+
+@media (max-width: 600px) {
+  .session-card {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .session-card .session-end-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* =============================================================================
+   SHOW / HIDE UTILITIES
+============================================================================= */
+
+.hide-mobile  { display: block; }
+.show-mobile  { display: none;  }
+
+@media (max-width: 767px) {
+  .hide-mobile { display: none  !important; }
+  .show-mobile { display: block !important; }
+}
+
+/* =============================================================================
+   RESPONSIVE HERO CTA BUTTONS
+============================================================================= */
+
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .hero-cta {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 24px;
+  }
+
+  .hero-cta .btn-gold,
+  .hero-cta .btn-ghost {
+    width: 100% !important;
+    text-align: center;
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE TRANSFORMATION STATS GRID
+============================================================================= */
+
+.stats-grid {
+  display: grid;
+  gap: 2px;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (min-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* =============================================================================
+   LANDING PAGE SPECIFIC FIXES
+============================================================================= */
+
+/* Hero section padding adjustment for mobile */
+@media (max-width: 767px) {
+  .hero-section {
+    padding-top: 64px;
+  }
+}
+
+/* Scroll indicator hidden on mobile */
+@media (max-width: 767px) {
+  .scroll-indicator { display: none !important; }
+}
+
+/* =============================================================================
+   TOUCH DEVICE IMPROVEMENTS
+============================================================================= */
+
+@media (hover: none) {
+  /* Remove hover states on touch devices — they get "stuck" */
+  .btn-gold:hover    { background: var(--gold)  !important; box-shadow: none !important; }
+  .btn-ghost:hover   { border-color: rgba(255,255,255,0.1) !important; color: var(--white-dim) !important; }
+}
+
+/* Larger tap targets on mobile */
+@media (max-width: 767px) {
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
+}
+
+/* =============================================================================
+   ANIMATIONS — Respect user preference for reduced motion
+============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
