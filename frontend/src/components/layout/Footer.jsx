@@ -42,7 +42,7 @@ export default function Footer() {
   return (
     <footer style={{
       borderTop : "1px solid rgba(255,255,255,0.05)",
-      padding   : "48px 1.5rem 32px",
+      padding   : "48px 16px 32px",
       position  : "relative",
       zIndex    : 1,
     }}>
@@ -50,9 +50,7 @@ export default function Footer() {
 
         {/* Top row */}
         <div style={{
-          display            : "grid",
-          gridTemplateColumns: "2fr 1fr 1fr 1fr",
-          gap                : "48px",
+          gap                : "32px",
           marginBottom       : "48px",
         }}
           className="footer-grid">
@@ -103,7 +101,7 @@ export default function Footer() {
           justifyContent: "space-between",
           alignItems    : "center",
           flexWrap      : "wrap",
-          gap           : "12px",
+          gap           : "16px",
         }}>
           <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)" }}>
             © {new Date().getFullYear()} ATMOS Gym Pvt. Ltd. All rights reserved.
