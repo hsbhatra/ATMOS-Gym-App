@@ -157,9 +157,9 @@ body {
 }
 
 /* ── Page Transition ── */
-.page-enter {
+/* .page-enter {
   animation: fadeSlideUp 0.4s ease forwards;
-}
+} */
 
 @keyframes fadeSlideUp {
   from {
@@ -713,3 +713,35 @@ img, video, canvas {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Auth card padding shrinks on very small screens */
+@media (max-width: 400px) {
+  .auth-card-wrapper {
+    padding: 28px 20px !important;
+  }
+}
+
+/* Profile content full width on mobile */
+@media (max-width: 767px) {
+  .profile-content {
+    max-width: 100% !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* offset for fixed navbar */
+}
+
+/* Keyboard focus rings */
+:focus-visible {
+  outline        : 2px solid #e8c44a;
+  outline-offset : 3px;
+  border-radius  : 4px;
+}
+
+/* Remove default focus ring (we use focus-visible instead) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+

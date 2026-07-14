@@ -12,6 +12,8 @@ import {
   resendRegistrationOtp,
 } from "../../services/authService.js";
 import ParticleBackground from "../../components/three/ParticleBackground.jsx";
+import { motion } from "framer-motion";
+import { scaleIn } from "../../utils/animations.js";
 
 // =============================================================================
 // ParticleBackground
@@ -323,8 +325,11 @@ export default function VerifyOtpPage() {
       />
 
       {/* Card */}
-      <div
-        className="auth-card-wrapper page-enter"
+      <motion.div
+        className="auth-card-wrapper"
+        initial={scaleIn.initial}
+        animate={scaleIn.animate}
+        transition={scaleIn.transition}
         style={{
           position: "relative",
           zIndex: 1,
@@ -540,7 +545,7 @@ export default function VerifyOtpPage() {
             ← {isRegistration ? "Back to register" : "Back to forgot password"}
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
