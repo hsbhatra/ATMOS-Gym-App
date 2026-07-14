@@ -22,6 +22,8 @@ import {
 import ParticleBackground from "../../components/three/ParticleBackground.jsx";
 import Logo from "../../components/ui/Logo.jsx";
 import ConfirmDialog from "../../components/ui/ConfirmDialog.jsx";
+import { motion, AnimatePresence } from "framer-motion";
+import { slideInRight } from "../../utils/animations.js";
 
 // =============================================================================
 // ProfileSection
@@ -1433,26 +1435,16 @@ export default function ProfilePage() {
             }}
           >
             {navItems.map((item) => (
-              <div
+              <motion.div
                 key={item.id}
                 style={sidebarItemStyle(activeTab === item.id)}
                 onClick={() => setActiveTab(item.id)}
-                onMouseEnter={(e) => {
-                  if (activeTab !== item.id) {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                    e.currentTarget.style.color = "rgba(255,255,255,0.7)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeTab !== item.id) {
-                    e.currentTarget.style.background = "transparent";
-                    e.currentTarget.style.color = "rgba(255,255,255,0.5)";
-                  }
-                }}
+                whileHover={{ x: 4, transition: { duration: 0.15 } }}
+                whileTap={{ scale: 0.98 }}
               >
                 <span style={{ fontSize: "18px" }}>{item.icon}</span>
                 <span>{item.label}</span>
-              </div>
+              </motion.div>
             ))}
           </nav>
 
@@ -1518,15 +1510,23 @@ export default function ProfilePage() {
               </div>
             </div>
           ) : (
-            <div className="page-enter" key={activeTab}>
-              {activeTab === "profile" && (
-                <ProfileSection user={user} onUpdate={setUser} />
-              )}
-              {activeTab === "sessions" && (
-                <SessionsSection onLogout={() => navigate("/")} />
-              )}
-              {activeTab === "password" && <ChangePasswordSection />}
-            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={slideInRight.initial}
+                animate={slideInRight.animate}
+                exit={slideInRight.exit}
+                transition={slideInRight.transition}
+              >
+                {activeTab === "profile" && (
+                  <ProfileSection user={user} onUpdate={setUser} />
+                )}
+                {activeTab === "sessions" && (
+                  <SessionsSection onLogout={() => navigate("/")} />
+                )}
+                {activeTab === "password" && <ChangePasswordSection />}
+              </motion.div>
+            </AnimatePresence>
           )}
         </main>
       </div>

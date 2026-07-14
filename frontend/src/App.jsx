@@ -22,6 +22,9 @@ import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import ProfilePage from "./pages/profile/ProfilePage.jsx";
 import SessionsPage from "./pages/profile/SessionsPage.jsx";
 import ChangePasswordPage from "./pages/profile/ChangePasswordPage.jsx";
+import { AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 // =============================================================================
 // AppContent — renders after session initialization completes
@@ -31,6 +34,7 @@ function AppContent() {
   useAuthInit();
 
   const isInitialized = useAuthStore((s) => s.isInitialized);
+  const location = useLocation();
 
   // Show loading screen while we silently check for existing session
   // This prevents the brief flash of login page before session is restored
@@ -39,7 +43,7 @@ function AppContent() {
   return (
     <>
       <Toaster
-        position="top-right"
+        position="top-center" // center on mobile, right on desktop
         toastOptions={{
           style: {
             background: "#1a1a1a",
@@ -47,92 +51,95 @@ function AppContent() {
             border: "1px solid rgba(255,255,255,0.08)",
             borderRadius: "10px",
             fontSize: "14px",
+            maxWidth: "360px",
           },
           success: { iconTheme: { primary: "#e8c44a", secondary: "#0a0a0a" } },
           error: { iconTheme: { primary: "#ef4444", secondary: "#ffffff" } },
         }}
       />
 
-      <Routes>
-        {/* Public — accessible by everyone */}
-        <Route path="/" element={<LandingPage />} />
-
-        {/* Auth — only for non-logged-in users */}
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <RegisterPage />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/verify-otp"
-          element={
-            <PublicRoute>
-              <VerifyOtpPage />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/forgot-password"
-          element={
-            <PublicRoute>
-              <ForgotPasswordPage />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/forgot-otp"
-          element={
-            <PublicRoute>
-              <ForgotOtpPage />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/reset-password"
-          element={
-            <PublicRoute>
-              <ResetPasswordPage />
-            </PublicRoute>
-          }
-        />
-
-        {/* Protected — only for logged-in users */}
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile/sessions"
-          element={
-            <ProtectedRoute>
-              <SessionsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile/change-password"
-          element={
-            <ProtectedRoute>
-              <ChangePasswordPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          {/* Public — accessible by everyone */}
+          <Route path="/" element={<LandingPage />} />
+          {/* Auth — only for non-logged-in users */}
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <RegisterPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/verify-otp"
+            element={
+              <PublicRoute>
+                <VerifyOtpPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPasswordPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot-otp"
+            element={
+              <PublicRoute>
+                <ForgotOtpPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              <PublicRoute>
+                <ResetPasswordPage />
+              </PublicRoute>
+            }
+          />
+          {/* Protected — only for logged-in users */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/sessions"
+            element={
+              <ProtectedRoute>
+                <SessionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/change-password"
+            element={
+              <ProtectedRoute>
+                <ChangePasswordPage />
+              </ProtectedRoute>
+            }
+          />
+          // Add as last route:
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </AnimatePresence>
     </>
   );
 }

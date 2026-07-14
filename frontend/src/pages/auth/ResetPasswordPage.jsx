@@ -11,6 +11,8 @@ import { resetPassword } from "../../services/authService.js";
 import ParticleBackground from "../../components/three/ParticleBackground.jsx";
 import Logo from "../../components/ui/Logo.jsx";
 import PasswordStrength from "../../components/ui/PasswordStrength.jsx";
+import { motion } from "framer-motion";
+import { scaleIn } from "../../utils/animations.js";
 
 // =============================================================================
 // ResetPasswordPage
@@ -99,8 +101,11 @@ export default function ResetPasswordPage() {
       />
 
       {/* Card */}
-      <div
-        className="auth-card-wrapper page-enter"
+      <motion.div
+        className="auth-card-wrapper"
+        initial={scaleIn.initial}
+        animate={scaleIn.animate}
+        transition={scaleIn.transition}
         style={{
           position: "relative",
           zIndex: 1,
@@ -348,7 +353,9 @@ export default function ResetPasswordPage() {
           </>
         ) : (
           /* ── Success State ── */
-          <div className="page-enter">
+          <div 
+          // className="page-enter"
+          >
             <div
               style={{
                 width: "72px",
@@ -419,7 +426,7 @@ export default function ResetPasswordPage() {
             </button>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

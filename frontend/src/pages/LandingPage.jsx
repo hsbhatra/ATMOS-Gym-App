@@ -10,6 +10,21 @@ import ParticleBackground from "../components/three/ParticleBackground.jsx";
 import Logo from "../components/ui/Logo.jsx";
 import Navbar from "../components/layout/Navbar.jsx";
 import Footer from "../components/layout/Footer.jsx";
+import { motion } from "framer-motion";
+import {
+  heroContainer,
+  heroItem,
+  staggerContainer,
+  staggerItem,
+  staggerContainerSlow,
+  cardHover,
+  scrollFadeUp,
+  scrollFadeIn,
+  labelReveal,
+  scaleIn,
+  buttonHover,
+  scrollScaleIn,
+} from "../utils/animations.js";
 
 // =============================================================================
 // Reusable Section Label
@@ -211,9 +226,6 @@ export default function LandingPage() {
 
   // ── Render ───────────────────────────────────────────────────────────────────
   return (
-    // <div
-    //   style={{ minHeight: "100vh", background: "#0a0a0a", overflowX: "hidden" }}
-    // >
     <div
       style={{
         minHeight: "100vh",
@@ -269,7 +281,10 @@ export default function LandingPage() {
           }}
         />
 
-        <div
+        <motion.div
+          variants={heroContainer}
+          initial="initial"
+          animate="animate"
           style={{
             position: "relative",
             zIndex: 2,
@@ -277,73 +292,78 @@ export default function LandingPage() {
             padding: "0 1.5rem",
             maxWidth: "860px",
           }}
-          className="page-enter"
         >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              background: "rgba(232,196,74,0.08)",
-              border: "1px solid rgba(232,196,74,0.25)",
-              borderRadius: "100px",
-              padding: "7px 18px",
-              marginBottom: "36px",
-            }}
-          >
-            <span
+          <motion.div variants={heroItem}>
+            <div
               style={{
-                width: "7px",
-                height: "7px",
-                borderRadius: "50%",
-                background: "#e8c44a",
-                display: "inline-block",
-                boxShadow: "0 0 8px #e8c44a",
-              }}
-            />
-            <span
-              style={{
-                fontSize: "12px",
-                color: "#e8c44a",
-                letterSpacing: "2px",
-                fontWeight: "600",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "rgba(232,196,74,0.08)",
+                border: "1px solid rgba(232,196,74,0.25)",
+                borderRadius: "100px",
+                padding: "7px 18px",
+                marginBottom: "36px",
               }}
             >
-              INDIA'S PREMIER FITNESS DESTINATION
-            </span>
-          </div>
+              <span
+                style={{
+                  width: "7px",
+                  height: "7px",
+                  borderRadius: "50%",
+                  background: "#e8c44a",
+                  display: "inline-block",
+                  boxShadow: "0 0 8px #e8c44a",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: "12px",
+                  color: "#e8c44a",
+                  letterSpacing: "2px",
+                  fontWeight: "600",
+                }}
+              >
+                KOTA'S PREMIER FITNESS DESTINATION
+              </span>
+            </div>
+          </motion.div>
 
-          <h1
-            style={{
-              fontSize: "clamp(52px, 9vw, 104px)",
-              fontWeight: "900",
-              lineHeight: "0.95",
-              marginBottom: "28px",
-              letterSpacing: "-3px",
-            }}
-          >
-            WHERE
-            <br />
-            <span className="text-gold-gradient">LEGENDS</span>
-            <br />
-            ARE MADE
-          </h1>
+          <motion.div variants={heroItem}>
+            <h1
+              style={{
+                fontSize: "clamp(52px, 9vw, 104px)",
+                fontWeight: "900",
+                lineHeight: "0.95",
+                marginBottom: "28px",
+                letterSpacing: "-3px",
+              }}
+            >
+              WHERE
+              <br />
+              <span className="text-gold-gradient">LEGENDS</span>
+              <br />
+              ARE MADE
+            </h1>
+          </motion.div>
 
-          <p
-            style={{
-              fontSize: "clamp(15px, 2vw, 18px)",
-              color: "rgba(255,255,255,0.45)",
-              maxWidth: "500px",
-              margin: "0 auto 44px",
-              lineHeight: "1.75",
-            }}
-          >
-            State-of-the-art equipment. Elite coaching. A community obsessed
-            with results. Your transformation starts the moment you walk through
-            our doors.
-          </p>
+          <motion.div variants={heroItem}>
+            <p
+              style={{
+                fontSize: "clamp(15px, 2vw, 18px)",
+                color: "rgba(255,255,255,0.45)",
+                maxWidth: "500px",
+                margin: "0 auto 44px",
+                lineHeight: "1.75",
+              }}
+            >
+              State-of-the-art equipment. Elite coaching. A community obsessed
+              with results. Your transformation starts the moment you walk
+              through our doors.
+            </p>
+          </motion.div>
 
-          <div className="hero-cta">
+          <motion.div variants={heroItem} className="hero-cta">
             <button
               onClick={() => navigate("/register")}
               className="btn-gold"
@@ -363,7 +383,7 @@ export default function LandingPage() {
             >
               Member Login
             </button>
-          </div>
+          </motion.div>
 
           {/* Stats */}
           <div className="hero-stats">
@@ -402,7 +422,7 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Scroll indicator */}
         <div
@@ -456,8 +476,12 @@ export default function LandingPage() {
               paddingTop: "250px",
             }}
           >
-            <SectionLabel text="Training Programs" />
-            <h2
+            <motion.p variants={labelReveal}>
+              <SectionLabel text="Training Programs" />
+            </motion.p>
+            <motion.h2
+              // scrollFadeUp
+              variants={scrollFadeUp}
               style={{
                 fontSize: "clamp(28px, 4vw, 46px)",
                 fontWeight: "800",
@@ -466,7 +490,7 @@ export default function LandingPage() {
               }}
             >
               Train with <span className="text-gold-gradient">purpose</span>
-            </h2>
+            </motion.h2>
             <p
               style={{
                 color: "rgba(255,255,255,0.4)",
@@ -481,27 +505,29 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid-auto">
+          <motion.div
+            className="grid-auto"
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-60px" }}
+          >
             {programs.map((p) => (
-              <div
+              <motion.div
                 key={p.title}
-                className="auth-card"
+                variants={staggerItem}
+                whileHover={{
+                  y: -6,
+                  borderColor: "rgba(232,196,74,0.25)",
+                  transition: { duration: 0.2 },
+                }}
                 style={{
                   padding: "28px",
+                  borderRadius: "12px",
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.06)",
                   position: "relative",
                   cursor: "pointer",
-                  transition:
-                    "transform 0.25s, border-color 0.25s, background 0.25s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-6px)";
-                  e.currentTarget.style.borderColor = "rgba(232,196,74,0.25)";
-                  e.currentTarget.style.background = "rgba(232,196,74,0.03)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.02)";
                 }}
               >
                 {p.tag && (
@@ -543,9 +569,9 @@ export default function LandingPage() {
                 >
                   {p.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -573,10 +599,17 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div className="stats-grid">
+          <motion.div
+            className="stats-grid"
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
             {transformations.map((t, i) => (
-              <div
+              <motion.div
                 key={i}
+                variants={staggerItem}
                 style={{
                   padding: "40px 32px",
                   textAlign: "center",
@@ -608,9 +641,9 @@ export default function LandingPage() {
                 >
                   {t.label}
                 </p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -642,11 +675,22 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid-3">
+          <motion.div
+            className="grid-3"
+            variants={staggerContainerSlow}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-60px" }}
+          >
             {trainers.map((t) => (
-              <div
+              <motion.div
                 key={t.name}
-                className="auth-card"
+                variants={staggerItem}
+                whileHover={{
+                  y: -6,
+                  borderColor: "rgba(232,196,74,0.2)",
+                  transition: { duration: 0.2 },
+                }}
                 style={{
                   padding: "32px",
                   transition: "transform 0.25s, border-color 0.25s",
@@ -751,9 +795,9 @@ export default function LandingPage() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -887,10 +931,20 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="pricing-grid">
+          <motion.div
+            className="pricing-grid"
+            variants={staggerContainerSlow}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
             {plans.map((p) => (
-              <div
+              <motion.div
                 key={p.name}
+                variants={staggerItem}
+                whileHover={
+                  !p.highlight ? { y: -4, transition: { duration: 0.2 } } : {}
+                }
                 className={p.highlight ? "pricing-card--featured" : ""}
                 style={{
                   padding: "36px 28px",
@@ -1040,9 +1094,9 @@ export default function LandingPage() {
                 >
                   Get Started Free
                 </button>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1069,10 +1123,17 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div className="grid-3">
+          <motion.div
+            className="grid-3"
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-60px" }}
+          >
             {testimonials.map((t) => (
-              <div
+              <motion.div
                 key={t.name}
+                variants={staggerItem}
                 className="auth-card"
                 style={{ padding: "32px" }}
               >
@@ -1138,9 +1199,9 @@ export default function LandingPage() {
                     {t.result}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1149,7 +1210,8 @@ export default function LandingPage() {
         <div
           style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}
         >
-          <div
+          <motion.div
+            variants={scrollScaleIn}
             style={{
               padding: "70px 48px",
               borderRadius: "28px",
@@ -1249,7 +1311,7 @@ export default function LandingPage() {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
