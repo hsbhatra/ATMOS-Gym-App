@@ -1,0 +1,637 @@
+import { useState, useRef } from "react";
+import { useAuthStore } from "../../store/authStore.js";
+import {
+  updateProfile,
+  updateProfilePicture,
+  deleteProfilePicture,
+} from "../../services/profileService.js";
+import toast from "react-hot-toast";
+
+export default function ProfileSection({ user, onUpdate }) {
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const fileInputRef = useRef(null);
+  const setStoreUser = useAuthStore((s) => s.setUser);
+
+  const [form, setForm] = useState({
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
+    height: user.height || "",
+    weight: user.weight || "",
+    dateOfBirth: user.dateOfBirth ? user.dateOfBirth.split("T")[0] : "",
+    gender: user.gender || "",
+    bio: user.bio || "",
+  });
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const payload = { ...form };
+      if (!payload.height) delete payload.height;
+      if (!payload.weight) delete payload.weight;
+      if (!payload.dateOfBirth) delete payload.dateOfBirth;
+      if (!payload.gender) delete payload.gender;
+      if (!payload.bio) delete payload.bio;
+
+      const res = await updateProfile(payload);
+      const updated = res.data.data.user;
+      onUpdate(updated);
+      setStoreUser(updated);
+      setEditing(false);
+      toast.success("Profile updated successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update profile.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePictureUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("profilePicture", file);
+    setUploading(true);
+    try {
+      const res = await updateProfilePicture(formData);
+      const updated = res.data.data.user;
+      onUpdate(updated);
+      setStoreUser(updated);
+      toast.success("Profile picture updated!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to upload picture.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemovePicture = async () => {
+    setRemoving(true);
+    try {
+      const res = await deleteProfilePicture();
+      const updated = res.data.data.user;
+      onUpdate(updated);
+      setStoreUser(updated);
+      toast.success("Profile picture removed.");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to remove picture.");
+    } finally {
+      setRemoving(false);
+    }
+  };
+
+  const inputStyle = (disabled) => ({
+    width: "100%",
+    background: disabled ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.04)",
+    border: `1px solid ${disabled ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)"}`,
+    borderRadius: "10px",
+    padding: "11px 14px",
+    color: disabled ? "rgba(255,255,255,0.35)" : "#fff",
+    fontSize: "14px",
+    outline: "none",
+    cursor: disabled ? "not-allowed" : "text",
+    transition: "border-color 0.2s, background 0.2s",
+  });
+
+  const labelStyle = {
+    fontSize: "12px",
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.4)",
+    letterSpacing: "0.5px",
+    textTransform: "uppercase",
+    display: "block",
+    marginBottom: "8px",
+  };
+
+  return (
+    <div>
+      {/* Avatar row */}
+      <div className="profile-avatar-row">
+        {/* Avatar */}
+        <div style={{ position: "relative", flexShrink: 0 }}>
+          <div
+            style={{
+              width: "88px",
+              height: "88px",
+              borderRadius: "50%",
+              border: "2px solid rgba(232,196,74,0.3)",
+              overflow: "hidden",
+              background: "#1a1a1a",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {user.profilePicture ? (
+              <img
+                src={user.profilePicture}
+                alt="Profile"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <span
+                style={{
+                  fontSize: "32px",
+                  fontWeight: "800",
+                  color: "#e8c44a",
+                }}
+              >
+                {user.firstName?.[0]?.toUpperCase()}
+              </span>
+            )}
+          </div>
+          {/* Upload overlay */}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "50%",
+              border: "none",
+              background: "rgba(0,0,0,0)",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "background 0.2s",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = "rgba(0,0,0,0.5)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "rgba(0,0,0,0)")
+            }
+          >
+            <span
+              style={{
+                fontSize: "18px",
+                opacity: 0,
+                transition: "opacity 0.2s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
+            >
+              📷
+            </span>
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handlePictureUpload}
+          />
+        </div>
+
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h2
+            style={{ fontSize: "20px", fontWeight: "700", marginBottom: "4px" }}
+          >
+            {user.firstName} {user.lastName}
+          </h2>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#e8c44a",
+              fontWeight: "600",
+              marginBottom: "8px",
+            }}
+          >
+            @{user.userId || "hulkgym_user"}
+          </p>
+          <span
+            style={{
+              fontSize: "11px",
+              padding: "3px 10px",
+              borderRadius: "100px",
+              background: "rgba(232,196,74,0.1)",
+              border: "1px solid rgba(232,196,74,0.2)",
+              color: "#e8c44a",
+              fontWeight: "600",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+            }}
+          >
+            {user.role}
+          </span>
+        </div>
+
+        {/* Picture actions */}
+        <div
+          className="avatar-actions"
+          style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+        >
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "8px",
+              border: "1px solid rgba(232,196,74,0.3)",
+              background: "rgba(232,196,74,0.08)",
+              color: "#e8c44a",
+              fontSize: "12px",
+              fontWeight: "600",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {uploading ? "Uploading..." : "Change Photo"}
+          </button>
+          {user.profilePicture && (
+            <button
+              onClick={handleRemovePicture}
+              disabled={removing}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "8px",
+                border: "1px solid rgba(239,68,68,0.2)",
+                background: "transparent",
+                color: "#ef4444",
+                fontSize: "12px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              {removing ? "Removing..." : "Remove"}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Form */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        {/* Section: Personal Info */}
+        <div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "16px",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "14px",
+                fontWeight: "700",
+                color: "rgba(255,255,255,0.6)",
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+              }}
+            >
+              Personal Information
+            </h3>
+            {!editing ? (
+              <button
+                onClick={() => setEditing(true)}
+                style={{
+                  padding: "7px 16px",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(232,196,74,0.3)",
+                  background: "rgba(232,196,74,0.08)",
+                  color: "#e8c44a",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                }}
+              >
+                Edit Profile
+              </button>
+            ) : (
+              <div style={{ display: "flex", gap: "8px" }}>
+                <button
+                  onClick={() => setEditing(false)}
+                  style={{
+                    padding: "7px 14px",
+                    borderRadius: "8px",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    background: "transparent",
+                    color: "rgba(255,255,255,0.5)",
+                    fontSize: "12px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  style={{
+                    padding: "7px 16px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#e8c44a",
+                    color: "#0a0a0a",
+                    fontSize: "12px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                  }}
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="profile-form-grid">
+            {/* First Name */}
+            <div>
+              <label style={labelStyle}>First Name</label>
+              <input
+                name="firstName"
+                value={form.firstName}
+                onChange={handleChange}
+                disabled={!editing}
+                style={inputStyle(!editing)}
+                onFocus={(e) => {
+                  if (editing) e.target.style.borderColor = "#e8c44a";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = editing
+                    ? "rgba(255,255,255,0.1)"
+                    : "rgba(255,255,255,0.05)";
+                }}
+              />
+            </div>
+            {/* Last Name */}
+            <div>
+              <label style={labelStyle}>Last Name</label>
+              <input
+                name="lastName"
+                value={form.lastName}
+                onChange={handleChange}
+                disabled={!editing}
+                style={inputStyle(!editing)}
+                onFocus={(e) => {
+                  if (editing) e.target.style.borderColor = "#e8c44a";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = editing
+                    ? "rgba(255,255,255,0.1)"
+                    : "rgba(255,255,255,0.05)";
+                }}
+              />
+            </div>
+            {/* Email — read only */}
+            <div>
+              <label style={labelStyle}>
+                Email Address{" "}
+                <span
+                  style={{
+                    color: "rgba(255,255,255,0.2)",
+                    fontWeight: "400",
+                    textTransform: "none",
+                    letterSpacing: 0,
+                    fontSize: "11px",
+                  }}
+                >
+                  (cannot be changed)
+                </span>
+              </label>
+              <input
+                value={user.email}
+                disabled
+                style={{ ...inputStyle(true), cursor: "not-allowed" }}
+              />
+            </div>
+            {/* Phone — read only */}
+            <div>
+              <label style={labelStyle}>
+                Phone Number{" "}
+                <span
+                  style={{
+                    color: "rgba(255,255,255,0.2)",
+                    fontWeight: "400",
+                    textTransform: "none",
+                    letterSpacing: 0,
+                    fontSize: "11px",
+                  }}
+                >
+                  (cannot be changed)
+                </span>
+              </label>
+              <input
+                value={`+91 ${user.phoneNumber}`}
+                disabled
+                style={{ ...inputStyle(true), cursor: "not-allowed" }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: "1px", background: "rgba(255,255,255,0.05)" }} />
+
+        {/* Section: Body Information */}
+        <div>
+          <h3
+            style={{
+              fontSize: "14px",
+              fontWeight: "700",
+              color: "rgba(255,255,255,0.6)",
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+              marginBottom: "16px",
+            }}
+          >
+            Body Information
+          </h3>
+          <div className="profile-form-grid">
+            {/* Height */}
+            <div>
+              <label style={labelStyle}>Height (cm)</label>
+              <input
+                type="number"
+                name="height"
+                value={form.height}
+                onChange={handleChange}
+                disabled={!editing}
+                placeholder="e.g. 175"
+                style={inputStyle(!editing)}
+                onFocus={(e) => {
+                  if (editing) e.target.style.borderColor = "#e8c44a";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = editing
+                    ? "rgba(255,255,255,0.1)"
+                    : "rgba(255,255,255,0.05)";
+                }}
+              />
+            </div>
+            {/* Weight */}
+            <div>
+              <label style={labelStyle}>Weight (kg)</label>
+              <input
+                type="number"
+                name="weight"
+                value={form.weight}
+                onChange={handleChange}
+                disabled={!editing}
+                placeholder="e.g. 70"
+                style={inputStyle(!editing)}
+                onFocus={(e) => {
+                  if (editing) e.target.style.borderColor = "#e8c44a";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = editing
+                    ? "rgba(255,255,255,0.1)"
+                    : "rgba(255,255,255,0.05)";
+                }}
+              />
+            </div>
+            {/* Date of Birth */}
+            <div>
+              <label style={labelStyle}>Date of Birth</label>
+              <input
+                type="date"
+                name="dateOfBirth"
+                value={form.dateOfBirth}
+                onChange={handleChange}
+                disabled={!editing}
+                style={{ ...inputStyle(!editing), colorScheme: "dark" }}
+                onFocus={(e) => {
+                  if (editing) e.target.style.borderColor = "#e8c44a";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = editing
+                    ? "rgba(255,255,255,0.1)"
+                    : "rgba(255,255,255,0.05)";
+                }}
+              />
+            </div>
+            {/* Gender */}
+            <div>
+              <label style={labelStyle}>Gender</label>
+              <select
+                name="gender"
+                value={form.gender}
+                onChange={handleChange}
+                disabled={!editing}
+                style={{ ...inputStyle(!editing), appearance: "none" }}
+              >
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+                <option value="preferNotToSay">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Bio */}
+          <div style={{ marginTop: "14px" }}>
+            <label style={labelStyle}>
+              Bio{" "}
+              <span
+                style={{
+                  color: "rgba(255,255,255,0.25)",
+                  fontWeight: "400",
+                  textTransform: "none",
+                  letterSpacing: 0,
+                  fontSize: "11px",
+                }}
+              >
+                ({200 - (form.bio?.length || 0)} chars remaining)
+              </span>
+            </label>
+            <textarea
+              name="bio"
+              value={form.bio}
+              onChange={handleChange}
+              disabled={!editing}
+              placeholder="Tell us about yourself..."
+              maxLength={200}
+              rows={3}
+              style={{
+                ...inputStyle(!editing),
+                resize: "vertical",
+                fontFamily: "inherit",
+                lineHeight: "1.6",
+              }}
+              onFocus={(e) => {
+                if (editing) e.target.style.borderColor = "#e8c44a";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = editing
+                  ? "rgba(255,255,255,0.1)"
+                  : "rgba(255,255,255,0.05)";
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Account info (read-only) */}
+        <div style={{ height: "1px", background: "rgba(255,255,255,0.05)" }} />
+        <div>
+          <h3
+            style={{
+              fontSize: "14px",
+              fontWeight: "700",
+              color: "rgba(255,255,255,0.6)",
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+              marginBottom: "16px",
+            }}
+          >
+            Account Information
+          </h3>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "14px",
+            }}
+          >
+            <div>
+              <label style={labelStyle}>Member ID</label>
+              <input
+                value={user.userId || "—"}
+                disabled
+                style={inputStyle(true)}
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Account Role</label>
+              <input
+                value={user.role?.charAt(0).toUpperCase() + user.role?.slice(1)}
+                disabled
+                style={inputStyle(true)}
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Member Since</label>
+              <input
+                value={new Date(user.createdAt).toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+                disabled
+                style={inputStyle(true)}
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Email Verified</label>
+              <input
+                value={user.isEmailVerified ? "✓ Verified" : "✗ Not Verified"}
+                disabled
+                style={{
+                  ...inputStyle(true),
+                  color: user.isEmailVerified ? "#22c55e" : "#ef4444",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -745,3 +745,20 @@ html {
   outline: none;
 }
 
+/* =============================================================================
+   PLAN DETAIL PAGE — Responsive
+============================================================================= */
+
+.plan-detail-grid {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .plan-detail-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+

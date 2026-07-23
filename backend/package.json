@@ -27,7 +27,9 @@
     "mongoose": "^9.7.0",
     "multer": "^2.2.0",
     "multer-storage-cloudinary": "^2.2.1",
+    "node-cron": "^4.6.0",
     "nodemailer": "^9.0.1",
+    "razorpay": "^2.9.8",
     "uuid": "^14.0.0"
   },
   "devDependencies": {
