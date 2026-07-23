@@ -10,6 +10,55 @@ import {
   getMySubscriptions,
 } from "../../services/subscriptionService.js";
 
+// Add this above the MembershipSection component:
+function SubscriptionHistory({ history, formatDate }) {
+  const statusColors = {
+    active: "#22c55e", grace: "#f97316", expired: "rgba(255,255,255,0.4)",
+    cancelled: "#ef4444", complimentary: "#a78bfa", pending: "#e8c44a",
+  };
+
+  return (
+    <div style={{ marginTop: "28px" }}>
+      <p style={{ fontSize: "12px", fontWeight: "700", color: "rgba(255,255,255,0.4)", letterSpacing: "1px", textTransform: "uppercase", marginBottom: "14px" }}>
+        Subscription History
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        {history.map((sub) => {
+          const isCancelled = sub.status === "cancelled";
+          const color = statusColors[sub.status] || "rgba(255,255,255,0.4)";
+          return (
+            <div key={sub._id} style={{ padding: "14px 16px", borderRadius: "10px", background: "rgba(255,255,255,0.02)", border: `1px solid ${isCancelled ? "rgba(239,68,68,0.1)" : "rgba(255,255,255,0.05)"}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div>
+                  <p style={{ fontSize: "14px", fontWeight: "600" }}>
+                    {sub.planSnapshot.planName} — {sub.planSnapshot.durationLabel}
+                  </p>
+                  <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.35)", marginTop: "3px" }}>
+                    {formatDate(sub.startDate)} → {formatDate(sub.endDate)}
+                  </p>
+                  {isCancelled && sub.cancelReason && (
+                    <p style={{ fontSize: "12px", color: "rgba(239,68,68,0.6)", marginTop: "4px" }}>
+                      ↳ {sub.cancelReason}
+                    </p>
+                  )}
+                  {isCancelled && sub.cancelledAt && (
+                    <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.25)", marginTop: "2px" }}>
+                      Cancelled on {formatDate(sub.cancelledAt)}
+                    </p>
+                  )}
+                </div>
+                <span style={{ fontSize: "11px", padding: "3px 10px", borderRadius: "100px", background: `${color}18`, border: `1px solid ${color}33`, color, fontWeight: "700", textTransform: "uppercase", flexShrink: 0, marginLeft: "12px" }}>
+                  {sub.status}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function MembershipSection() {
   const navigate = useNavigate();
   const [data, setData] = useState(null); // { subscription, payment, installments }
@@ -150,6 +199,8 @@ export default function MembershipSection() {
             View Plans →
           </button>
         </div>
+
+        {history.length > 0 && <SubscriptionHistory history={history} formatDate={formatDate} />}
       </div>
     );
   }
@@ -618,110 +669,7 @@ export default function MembershipSection() {
       </div>
 
       {/* Subscription History */}
-      {history.length > 0 && (
-        <div style={{ marginTop: "28px" }}>
-          <p
-            style={{
-              fontSize: "12px",
-              fontWeight: "700",
-              color: "rgba(255,255,255,0.4)",
-              letterSpacing: "1px",
-              textTransform: "uppercase",
-              marginBottom: "14px",
-            }}
-          >
-            Subscription History
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {history.map((sub) => {
-              const isCancelled = sub.status === "cancelled";
-              const statusColors = {
-                active: "#22c55e",
-                grace: "#f97316",
-                expired: "rgba(255,255,255,0.4)",
-                cancelled: "#ef4444",
-                complimentary: "#a78bfa",
-                pending: "#e8c44a",
-              };
-              const color = statusColors[sub.status] || "rgba(255,255,255,0.4)";
-
-              return (
-                <div
-                  key={sub._id}
-                  style={{
-                    padding: "14px 16px",
-                    borderRadius: "10px",
-                    background: "rgba(255,255,255,0.02)",
-                    border: `1px solid ${isCancelled ? "rgba(239,68,68,0.1)" : "rgba(255,255,255,0.05)"}`,
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <div>
-                      <p style={{ fontSize: "14px", fontWeight: "600" }}>
-                        {sub.planSnapshot.planName} —{" "}
-                        {sub.planSnapshot.durationLabel}
-                      </p>
-                      <p
-                        style={{
-                          fontSize: "12px",
-                          color: "rgba(255,255,255,0.35)",
-                          marginTop: "3px",
-                        }}
-                      >
-                        {formatDate(sub.startDate)} → {formatDate(sub.endDate)}
-                      </p>
-                      {isCancelled && sub.cancelReason && (
-                        <p
-                          style={{
-                            fontSize: "12px",
-                            color: "rgba(239,68,68,0.6)",
-                            marginTop: "4px",
-                          }}
-                        >
-                          ↳ {sub.cancelReason}
-                        </p>
-                      )}
-                      {isCancelled && sub.cancelledAt && (
-                        <p
-                          style={{
-                            fontSize: "11px",
-                            color: "rgba(255,255,255,0.25)",
-                            marginTop: "2px",
-                          }}
-                        >
-                          Cancelled on {formatDate(sub.cancelledAt)}
-                        </p>
-                      )}
-                    </div>
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        padding: "3px 10px",
-                        borderRadius: "100px",
-                        background: `${color}18`,
-                        border: `1px solid ${color}33`,
-                        color,
-                        fontWeight: "700",
-                        textTransform: "uppercase",
-                        flexShrink: 0,
-                        marginLeft: "12px",
-                      }}
-                    >
-                      {sub.status}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      {history.length > 0 && <SubscriptionHistory history={history} formatDate={formatDate} />}
     </div>
   );
 }
