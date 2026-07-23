@@ -81,9 +81,7 @@ export const verify = asyncHandler(async (req, res) => {
 export const getMyHistory = asyncHandler(async (req, res) => {
   const subscriptions = await getMySubscriptionHistory(req.user.userId);
 
-  return new ApiResponse(HTTP_STATUS.OK, "Subscription history retrieved.", {
-    subscriptions,
-  }).send(res);
+  return new ApiResponse(HTTP_STATUS.OK, "Subscription history retrieved.", { subscriptions, }).send(res);
 });
 
 // =============================================================================
