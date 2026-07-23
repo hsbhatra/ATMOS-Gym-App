@@ -88,3 +88,57 @@ export const EMAIL_CONFIG = {
   },
   OTP_VALIDITY_TEXT: `${OTP_CONFIG.EXPIRY_MINUTES} minutes`,
 };
+
+// Add to existing constants.js:
+
+export const PLAN_DURATIONS = {
+  MONTHLY: { days: 30, label: "Monthly" },
+  QUARTERLY: { days: 90, label: "Quarterly" },
+  HALF_YEARLY: { days: 180, label: "Half-Yearly" },
+  ANNUAL: { days: 365, label: "Annual" },
+};
+
+export const PLAN_STATUS = {
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+  ARCHIVED: "archived",
+};
+
+export const SUBSCRIPTION_STATUS = {
+  PENDING: "pending",
+  ACTIVE: "active",
+  GRACE: "grace",
+  EXPIRED: "expired",
+  CANCELLED: "cancelled",
+  COMPLIMENTARY: "complimentary",
+};
+
+export const PAYMENT_STATUS = {
+  PENDING: "pending",
+  COMPLETED: "completed",
+  PARTIAL: "partial",
+  FAILED: "failed",
+};
+
+export const PAYMENT_MODE = {
+  RAZORPAY: "razorpay",
+  CASH: "cash",
+  UPI: "upi",
+  CARD: "card",
+  NETBANKING: "netbanking",
+  WALLET: "wallet",
+  COMPLIMENTARY: "complimentary",
+};
+
+export const INSTALLMENT_STATUS = {
+  PENDING: "pending",
+  PAID: "paid",
+  OVERDUE: "overdue",
+  WAIVED: "waived",
+};
+
+export const GRACE_PERIOD_DAYS = 3;
+
+export const REMINDER_DAYS = [7, 3, 1]; // days before expiry to send reminders
+
+export const RECEIPT_PREFIX = "ATM"; // ATM-2026-00001

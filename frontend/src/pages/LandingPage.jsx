@@ -25,6 +25,7 @@ import {
   buttonHover,
   scrollScaleIn,
 } from "../utils/animations.js";
+import { getPublicPlans } from "../services/planService.js";
 
 // =============================================================================
 // Reusable Section Label
@@ -50,6 +51,48 @@ const SectionLabel = ({ text }) => (
 export default function LandingPage() {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  const [plans, setPlans] = useState([]);
+  const [plansLoading, setPlansLoading] = useState(true);
+  const [selectedDuration, setSelectedDuration] = useState(30); // default: monthly
+
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  const fetchPlans = async () => {
+    try {
+      const res = await getPublicPlans();
+      setPlans(res.data.data.plans);
+    } catch (err) {
+      console.error("Failed to load plans:", err);
+    } finally {
+      setPlansLoading(false);
+    }
+  };
+
+  // Helper: get the price for the currently selected duration
+  const getPriceForDuration = (plan, durationDays) => {
+    const tier = plan.pricingTiers.find((t) => t.durationDays === durationDays);
+    if (!tier) return null;
+
+    const now = new Date();
+    const hasOffer =
+      tier.offerPrice &&
+      (!tier.offerValidUntil || new Date(tier.offerValidUntil) > now);
+    return {
+      price: hasOffer ? tier.offerPrice : tier.price,
+      originalPrice: hasOffer ? tier.price : null,
+      label: tier.label,
+    };
+  };
+
+  const durationOptions = [
+    { days: 30, label: "Monthly" },
+    { days: 90, label: "Quarterly" },
+    { days: 180, label: "Half-Yearly" },
+    { days: 365, label: "Annual" },
+  ];
 
   // ── Data ────────────────────────────────────────────────────────────────────
 
@@ -149,51 +192,6 @@ export default function LandingPage() {
       name: "Functional Training",
       desc: "Battle ropes, kettlebells, sleds, pull-up rigs, and TRX suspension systems.",
       icon: "🔗",
-    },
-  ];
-
-  const plans = [
-    {
-      name: "Basic",
-      price: "₹1,499",
-      period: "/month",
-      features: [
-        "Full gym access",
-        "Locker room",
-        "2 group classes/week",
-        "Basic fitness assessment",
-      ],
-      highlight: false,
-      tag: "",
-    },
-    {
-      name: "Pro",
-      price: "₹2,999",
-      period: "/month",
-      features: [
-        "Everything in Basic",
-        "Unlimited group classes",
-        "1 PT session/month",
-        "Diet consultation",
-        "Progress tracking app",
-      ],
-      highlight: true,
-      tag: "Most Popular",
-    },
-    {
-      name: "Elite",
-      price: "₹5,499",
-      period: "/month",
-      features: [
-        "Everything in Pro",
-        "4 PT sessions/month",
-        "Custom meal plan",
-        "Body composition analysis",
-        "Priority booking",
-        "Sauna access",
-      ],
-      highlight: false,
-      tag: "",
     },
   ];
 
@@ -913,190 +911,266 @@ export default function LandingPage() {
       {/* ══ PRICING ═════════════════════════════════════════════════════════════ */}
       <section id="pricing" className="section-pad">
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "64px" }}>
+          <div style={{ textAlign: "center", marginBottom: "48px" }}>
             <SectionLabel text="Membership Plans" />
-            <h2
-              style={{
-                fontSize: "clamp(28px, 4vw, 46px)",
-                fontWeight: "800",
-                letterSpacing: "-1.5px",
-                marginBottom: "16px",
-              }}
-            >
+            <h2 className="section-title" style={{ marginBottom: "16px" }}>
               Invest in your{" "}
               <span className="text-gold-gradient">best self</span>
             </h2>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "15px" }}>
-              No hidden fees. Cancel anytime. First week is always free.
+            <p className="section-subtitle">
+              No hidden fees. Choose the duration that works for you.
             </p>
           </div>
 
-          <motion.div
-            className="pricing-grid"
-            variants={staggerContainerSlow}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
+          {/* Duration Selector Tabs */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "8px",
+              marginBottom: "40px",
+              flexWrap: "wrap",
+            }}
           >
-            {plans.map((p) => (
-              <motion.div
-                key={p.name}
-                variants={staggerItem}
-                whileHover={
-                  !p.highlight ? { y: -4, transition: { duration: 0.2 } } : {}
-                }
-                className={p.highlight ? "pricing-card--featured" : ""}
+            {durationOptions.map((opt) => (
+              <button
+                key={opt.days}
+                onClick={() => setSelectedDuration(opt.days)}
                 style={{
-                  padding: "36px 28px",
-                  borderRadius: "20px",
-                  border: p.highlight
-                    ? "1px solid rgba(232,196,74,0.4)"
-                    : "1px solid rgba(255,255,255,0.06)",
-                  background: p.highlight
-                    ? "linear-gradient(145deg, rgba(232,196,74,0.08), rgba(232,196,74,0.02))"
-                    : "rgba(255,255,255,0.02)",
-                  position: "relative",
-                  transform: p.highlight ? "scale(1.03)" : "scale(1)",
-                  transition: "transform 0.25s",
-                }}
-                onMouseEnter={(e) => {
-                  if (!p.highlight)
-                    e.currentTarget.style.transform = "scale(1.02)";
-                }}
-                onMouseLeave={(e) => {
-                  if (!p.highlight)
-                    e.currentTarget.style.transform = "scale(1)";
+                  padding: "9px 20px",
+                  borderRadius: "100px",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  border:
+                    selectedDuration === opt.days
+                      ? "1px solid rgba(232,196,74,0.4)"
+                      : "1px solid rgba(255,255,255,0.1)",
+                  background:
+                    selectedDuration === opt.days
+                      ? "rgba(232,196,74,0.1)"
+                      : "transparent",
+                  color:
+                    selectedDuration === opt.days
+                      ? "#e8c44a"
+                      : "rgba(255,255,255,0.5)",
                 }}
               >
-                {p.tag && (
-                  <div
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          {plansLoading ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "60px",
+                color: "rgba(255,255,255,0.3)",
+              }}
+            >
+              Loading plans...
+            </div>
+          ) : plans.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "60px",
+                color: "rgba(255,255,255,0.3)",
+              }}
+            >
+              Membership plans coming soon.
+            </div>
+          ) : (
+            <motion.div
+              className="pricing-grid"
+              variants={staggerContainerSlow}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+            >
+              {plans.map((plan) => {
+                const pricing = getPriceForDuration(plan, selectedDuration);
+                if (!pricing) return null;
+
+                return (
+                  <motion.div
+                    key={plan._id}
+                    variants={staggerItem}
+                    whileHover={
+                      !plan.isFeatured
+                        ? { y: -4, transition: { duration: 0.2 } }
+                        : {}
+                    }
+                    className={plan.isFeatured ? "pricing-card--featured" : ""}
                     style={{
-                      position: "absolute",
-                      top: "-14px",
-                      left: "50%",
-                      transform: "translateX(-50%)",
-                      background: "#e8c44a",
-                      color: "#0a0a0a",
-                      fontSize: "11px",
-                      fontWeight: "800",
-                      letterSpacing: "1px",
-                      padding: "5px 18px",
-                      borderRadius: "100px",
-                      whiteSpace: "nowrap",
+                      padding: "36px 28px",
+                      borderRadius: "20px",
+                      border: plan.isFeatured
+                        ? "1px solid rgba(232,196,74,0.4)"
+                        : "1px solid rgba(255,255,255,0.06)",
+                      background: plan.isFeatured
+                        ? "linear-gradient(145deg, rgba(232,196,74,0.08), rgba(232,196,74,0.02))"
+                        : "rgba(255,255,255,0.02)",
+                      position: "relative",
+                      transform: plan.isFeatured ? "scale(1.03)" : "scale(1)",
                     }}
                   >
-                    {p.tag}
-                  </div>
-                )}
-                <h3
-                  style={{
-                    fontSize: "15px",
-                    fontWeight: "700",
-                    color: p.highlight ? "#e8c44a" : "rgba(255,255,255,0.6)",
-                    letterSpacing: "2px",
-                    textTransform: "uppercase",
-                    marginBottom: "16px",
-                  }}
-                >
-                  {p.name}
-                </h3>
-                <div style={{ marginBottom: "28px" }}>
-                  <span
-                    style={{
-                      fontSize: "42px",
-                      fontWeight: "900",
-                      letterSpacing: "-2px",
-                    }}
-                  >
-                    {p.price}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      color: "rgba(255,255,255,0.35)",
-                      marginLeft: "4px",
-                    }}
-                  >
-                    {p.period}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    borderTop: "1px solid rgba(255,255,255,0.06)",
-                    paddingTop: "24px",
-                    marginBottom: "28px",
-                  }}
-                >
-                  {p.features.map((f) => (
-                    <div
-                      key={f}
+                    {plan.isFeatured && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "-14px",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          background: "#e8c44a",
+                          color: "#0a0a0a",
+                          fontSize: "11px",
+                          fontWeight: "800",
+                          letterSpacing: "1px",
+                          padding: "5px 18px",
+                          borderRadius: "100px",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Most Popular
+                      </div>
+                    )}
+
+                    <h3
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                        marginBottom: "12px",
+                        fontSize: "15px",
+                        fontWeight: "700",
+                        color: plan.isFeatured
+                          ? "#e8c44a"
+                          : "rgba(255,255,255,0.6)",
+                        letterSpacing: "2px",
+                        textTransform: "uppercase",
+                        marginBottom: "8px",
                       }}
                     >
+                      {plan.name}
+                    </h3>
+
+                    <p
+                      style={{
+                        fontSize: "13px",
+                        color: "rgba(255,255,255,0.4)",
+                        marginBottom: "20px",
+                        minHeight: "36px",
+                      }}
+                    >
+                      {plan.description}
+                    </p>
+
+                    <div style={{ marginBottom: "28px" }}>
+                      {pricing.originalPrice && (
+                        <span
+                          style={{
+                            fontSize: "16px",
+                            color: "rgba(255,255,255,0.3)",
+                            textDecoration: "line-through",
+                            marginRight: "8px",
+                          }}
+                        >
+                          ₹
+                          {(pricing.originalPrice / 100).toLocaleString(
+                            "en-IN",
+                          )}
+                        </span>
+                      )}
                       <span
                         style={{
-                          color: "#e8c44a",
-                          fontSize: "14px",
-                          flexShrink: 0,
+                          fontSize: "42px",
+                          fontWeight: "900",
+                          letterSpacing: "-2px",
                         }}
                       >
-                        ✓
+                        ₹{(pricing.price / 100).toLocaleString("en-IN")}
                       </span>
                       <span
                         style={{
-                          fontSize: "13px",
-                          color: "rgba(255,255,255,0.55)",
+                          fontSize: "14px",
+                          color: "rgba(255,255,255,0.35)",
+                          marginLeft: "4px",
                         }}
                       >
-                        {f}
+                        / {pricing.label.toLowerCase()}
                       </span>
                     </div>
-                  ))}
-                </div>
-                <button
-                  onClick={() => navigate("/register")}
-                  style={{
-                    width: "100%",
-                    padding: "13px",
-                    borderRadius: "10px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    border: "none",
-                    background: p.highlight ? "#e8c44a" : "transparent",
-                    color: p.highlight ? "#0a0a0a" : "rgba(255,255,255,0.6)",
-                    border: p.highlight
-                      ? "none"
-                      : "1px solid rgba(255,255,255,0.12)",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!p.highlight) {
-                      e.currentTarget.style.borderColor = "#e8c44a";
-                      e.currentTarget.style.color = "#e8c44a";
-                    } else {
-                      e.currentTarget.style.background = "#f0d060";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!p.highlight) {
-                      e.currentTarget.style.borderColor =
-                        "rgba(255,255,255,0.12)";
-                      e.currentTarget.style.color = "rgba(255,255,255,0.6)";
-                    } else {
-                      e.currentTarget.style.background = "#e8c44a";
-                    }
-                  }}
-                >
-                  Get Started Free
-                </button>
-              </motion.div>
-            ))}
-          </motion.div>
+
+                    <div
+                      style={{
+                        borderTop: "1px solid rgba(255,255,255,0.06)",
+                        paddingTop: "24px",
+                        marginBottom: "28px",
+                      }}
+                    >
+                      {plan.features.map((f) => (
+                        <div
+                          key={f}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                            marginBottom: "12px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              color: "#e8c44a",
+                              fontSize: "14px",
+                              flexShrink: 0,
+                            }}
+                          >
+                            ✓
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "13px",
+                              color: "rgba(255,255,255,0.55)",
+                            }}
+                          >
+                            {f}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/plans/${plan.slug}?duration=${selectedDuration}`,
+                        )
+                      }
+                      style={{
+                        width: "100%",
+                        padding: "13px",
+                        borderRadius: "10px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        border: "none",
+                        background: plan.isFeatured ? "#e8c44a" : "transparent",
+                        color: plan.isFeatured
+                          ? "#0a0a0a"
+                          : "rgba(255,255,255,0.6)",
+                        borderColor: plan.isFeatured
+                          ? "transparent"
+                          : "rgba(255,255,255,0.12)",
+                        borderWidth: plan.isFeatured ? 0 : "1px",
+                        borderStyle: "solid",
+                      }}
+                    >
+                      Get Started
+                    </button>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          )}
         </div>
       </section>
 

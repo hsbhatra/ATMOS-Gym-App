@@ -10,6 +10,10 @@ import cookieParser from "cookie-parser";
 import healthRoutes from "./routes/health.routes.js";
 import authRouter from "./routes/auth/index.js";
 import profileRouter from "./routes/profile.routes.js";
+import planRouter, { adminPlanRouter } from "./routes/plan.routes.js";
+import webhookRouter from "./routes/webhook.routes.js";
+import subscriptionRouter from "./routes/subscription.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 import errorHandler from "./middleware/error/errorHandler.middleware.js";
 
 const app = express();
@@ -62,6 +66,14 @@ app.use((req, res, next) => {
 // Body & Cookie Parsing
 // -----------------------------------------------------------------------------
 
+// Webhook route MUST come before express.json() and use raw body parsing
+// Razorpay signature verification requires the exact raw request bytes
+app.use(
+  "/api/v1/webhooks",
+  express.raw({ type: "application/json" }),
+  webhookRouter
+);
+
 // Parses incoming JSON request bodies → available as req.body
 app.use(express.json({ limit: "10kb" })); // limit prevents large payload attacks
 
@@ -78,6 +90,12 @@ app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/profile", profileRouter);
+app.use("/api/v1/plans", planRouter);
+app.use("/api/v1/subscriptions", subscriptionRouter);
+
+// Admin Routes
+app.use("/api/v1/admin/plans", adminPlanRouter);
+app.use("/api/v1/admin", adminRouter);
 
 // Health check (existing)
 app.use("/api/health", healthRoutes);

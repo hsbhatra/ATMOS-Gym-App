@@ -25,6 +25,12 @@ import ChangePasswordPage from "./pages/profile/ChangePasswordPage.jsx";
 import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import AdminRoute from "./components/layout/AdminRoute.jsx";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage.jsx";
+import AdminPlansPage from "./pages/admin/AdminPlansPage.jsx";
+import PlanDetailPage from "./pages/PlanDetailPage.jsx";
+import SubscriptionSuccessPage from "./pages/SubscriptionSuccessPage.jsx";
+import AdminMembersPage from "./pages/admin/AdminMembersPage.jsx";
 
 // =============================================================================
 // AppContent — renders after session initialization completes
@@ -136,7 +142,49 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
-          // Add as last route:
+          <Route path="/plans/:slug" element={<PlanDetailPage />} />
+          <Route
+            path="/subscription/success"
+            element={
+              <ProtectedRoute>
+                <SubscriptionSuccessPage />
+              </ProtectedRoute>
+            }
+          />
+          {/* Admin routes */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboardPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/plans"
+            element={
+              <AdminRoute>
+                <AdminPlansPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/members"
+            element={
+              <AdminRoute>
+                <AdminMembersPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/members/:id"
+            element={
+              <AdminRoute>
+                <AdminMembersPage />
+              </AdminRoute>
+            }
+          />
+          {/* Add as last route: */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AnimatePresence>
