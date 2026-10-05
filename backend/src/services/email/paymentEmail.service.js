@@ -54,7 +54,7 @@ export const sendPaymentReceipt = async (user, subscription, payment) => {
                         ✅
                       </div>
                       <h2 style="margin:16px 0 4px; color:#1a1a1a; font-size:20px;">Payment Successful</h2>
-                      <p style="margin:0; color:#888; font-size:13px;">Thank you for joining ATMOS Gym, ${user.firstName}!</p>
+                      <p style="margin:0; color:#888; font-size:13px;">Thank you for joining HULK Gym, ${user.firstName}!</p>
                     </div>
 
                     <table width="100%" cellpadding="0" cellspacing="0"
