@@ -1,4 +1,4 @@
-# ATMOS Gym 💪
+# HULK Gym 💪
 
 A full-stack gym management web application built with the MERN stack. Features a 3D animated dark-themed frontend, complete authentication system, profile management, and a scalable architecture for future gym features.
 
@@ -33,8 +33,8 @@ A full-stack gym management web application built with the MERN stack. Features 
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/hsbhatra/ATMOS-Gym-App.git
-cd ATMOS-Gym-App
+git clone https://github.com/hsbhatra/HULK-Gym-App.git
+cd HULK-Gym-App
 ```
 
 ### 2. Backend setup
@@ -90,7 +90,7 @@ VITE_API_URL=http://localhost:8000/api/v1
 ## Project Structure
 
 ```
-atmos-gym/
+hulk-gym/
 ├── backend/
 │   └── src/
 │       ├── config/          # DB, Cloudinary, env config

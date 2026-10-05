@@ -1,5 +1,5 @@
 # Project Setup Guide
-## ATMOS Gym Web Application
+## HULK Gym Web Application
 ### Complete Guide for New Developers
 
 ---
@@ -30,12 +30,12 @@ git --version    # any version is fine
 
 1. Go to [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
 2. Create a free account
-3. Create a new project called "atmos-gym"
+3. Create a new project called "hulk-gym"
 4. Build a cluster → choose **FREE** (M0 Shared)
 5. Choose any cloud provider and region closest to you
 6. Click **Create Cluster** (takes 1–3 minutes)
 7. In the left sidebar → **Database Access** → Add Database User
-   - Username: `atmos-admin`
+   - Username: `hulk-admin`
    - Password: generate a secure password → copy it
    - Role: `Atlas admin`
 8. In the left sidebar → **Network Access** → Add IP Address → **Allow Access from Anywhere** (0.0.0.0/0)
@@ -43,7 +43,7 @@ git --version    # any version is fine
 10. Choose **Connect your application**
 11. Copy the connection string — it looks like:
     ```
-    mongodb+srv://atmos-admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
+    mongodb+srv://hulk-admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
     ```
 12. Replace `<password>` with your actual password
 
@@ -83,13 +83,13 @@ git --version    # any version is fine
 ### 2.1 Clone the Repository
 
 ```bash
-git clone https://github.com/hsbhatra/ATMOS-Gym-App.git
-cd ATMOS-Gym-App
+git clone https://github.com/hsbhatra/HULK-Gym-App.git
+cd HULK-Gym-App
 ```
 
 You should see this structure:
 ```
-ATMOS-Gym-App/
+HULK-Gym-App/
 ├── backend/
 ├── frontend/
 └── docs/
@@ -121,7 +121,7 @@ PORT=8000
 NODE_ENV=development
 
 # Database — paste your MongoDB connection string here
-MONGO_URI=mongodb+srv://atmos-admin:yourpassword@cluster0.xxxxx.mongodb.net/atmos-gym-dev?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://hulk-admin:yourpassword@cluster0.xxxxx.mongodb.net/hulk-gym-dev?retryWrites=true&w=majority
 
 # JWT Secret — generate a strong random string
 # Run this command to generate one:
@@ -202,7 +202,7 @@ VITE v6.x.x  ready in 1234 ms
 
 Open your browser and go to `http://localhost:5173`
 
-You should see the ATMOS Gym landing page with the 3D particle animation.
+You should see the HULK Gym landing page with the 3D particle animation.
 
 ---
 
@@ -257,7 +257,7 @@ Run through this checklist:
 **Fix:**
 1. Check your MONGO_URI has the correct password (no `<>` angle brackets)
 2. In MongoDB Atlas → Network Access → make sure `0.0.0.0/0` is allowed
-3. Make sure the database name is in the URI: `.../atmos-gym-dev?retryWrites...`
+3. Make sure the database name is in the URI: `.../hulk-gym-dev?retryWrites...`
 
 ### Issue: "Cannot send OTP email"
 **Cause:** Wrong EMAIL_PASS or 2FA not enabled on Gmail  
