@@ -39,7 +39,8 @@ export default function AppLoader() {
           color          : "#0a0a0a",
           fontSize       : "26px",
         }}>
-        {GYM_INITIAL}
+          H
+        {/* {GYM_INITIAL} */}
       </motion.div>
 
       {/* Spinner */}
@@ -60,7 +61,8 @@ export default function AppLoader() {
         color     : "rgba(255,255,255,0.25)",
         letterSpacing: "1px",
       }}>
-        {GYM_NAME.toUpperCase()}
+        HULK GYM
+        {/* {GYM_NAME.toUpperCase()} */}
       </p>
     </div>
   );
