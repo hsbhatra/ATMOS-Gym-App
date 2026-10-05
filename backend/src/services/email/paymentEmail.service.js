@@ -108,7 +108,7 @@ export const sendPaymentReceipt = async (user, subscription, payment) => {
   `;
 
   await transporter.sendMail({
-    from: `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
+    from: `"${EMAIL_CONFIG.FROM_NAME}" <${FROM_ADDRESS}>`,
     to: user.email,
     subject: `Payment Receipt — ${payment.receiptNumber}`,
     html,
@@ -207,7 +207,7 @@ export const sendOfflinePaymentReceipt = async (
   `;
 
   await transporter.sendMail({
-    from: `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
+    from: `"${EMAIL_CONFIG.FROM_NAME}" <${FROM_ADDRESS}>`,
     to: user.email,
     subject: `Membership Activated — ${payment.receiptNumber}`,
     html,
