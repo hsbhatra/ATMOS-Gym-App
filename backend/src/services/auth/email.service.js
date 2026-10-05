@@ -1,21 +1,12 @@
 import nodemailer from "nodemailer";
-import { EMAIL_CONFIG, OTP_CONFIG } from "../../utils/constants.js";
-
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-};
+import { EMAIL_CONFIG, OTP_CONFIG, GYM_CONFIG } from "../../utils/constants.js";
+import { createTransporter, FROM_ADDRESS } from "../email/transporter.js";
 
 const sendOtpEmail = async (to, subject, htmlBody) => {
   const transporter = createTransporter();
 
   await transporter.sendMail({
-    from: `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
+    from: `"${EMAIL_CONFIG.FROM_NAME}" <${FROM_ADDRESS}>`,
     to,
     subject,
     html: htmlBody,
@@ -43,7 +34,7 @@ const buildOtpEmailHtml = (otp, headingText, bodyText) => {
                   <td style="background:#1a1a1a; padding:28px 32px;">
                     <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:700;
                                letter-spacing:1px;">
-                      ⚡ ATMOS GYM
+                      ⚡ ${GYM_CONFIG.NAME}
                     </h1>
                   </td>
                 </tr>
@@ -88,7 +79,7 @@ const buildOtpEmailHtml = (otp, headingText, bodyText) => {
                               border-top:1px solid #eeeeee;">
                     <p style="margin:0; color:#aaaaaa; font-size:12px; text-align:center;">
                       If you did not request this, please ignore this email.<br/>
-                      © ${new Date().getFullYear()} ATMOS Gym. All rights reserved.
+                      © ${new Date().getFullYear()} ${GYM_CONFIG.NAME}. All rights reserved.
                     </p>
                   </td>
                 </tr>

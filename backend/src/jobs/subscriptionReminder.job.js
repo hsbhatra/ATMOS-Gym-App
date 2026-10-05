@@ -11,11 +11,12 @@ import Subscription from "../models/subscription.model.js";
 import Installment  from "../models/installment.model.js";
 import nodemailer   from "nodemailer";
 import { SUBSCRIPTION_STATUS, INSTALLMENT_STATUS, REMINDER_DAYS, EMAIL_CONFIG } from "../utils/constants.js";
+import { createTransporter, FROM_ADDRESS } from "../services/email/transporter.js";
 
-const createTransporter = () => nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-});
+// const createTransporter = () => nodemailer.createTransport({
+//   service: "gmail",
+//   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+// });
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
@@ -91,7 +92,7 @@ const sendReminderEmail = async (user, subscription, daysLeft) => {
   `;
 
   await transporter.sendMail({
-    from   : `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
+    from   : `"${EMAIL_CONFIG.FROM_NAME}" <${FROM_ADDRESS}>`,
     to     : user.email,
     subject,
     html,

@@ -180,7 +180,7 @@ export default function MembershipSection() {
               marginBottom: "24px",
             }}
           >
-            Choose a plan to get full access to ATMOS Gym.
+            Choose a plan to get full access to HULK Gym.
           </p>
           <button
             onClick={() => {

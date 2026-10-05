@@ -623,7 +623,7 @@ function CashPaymentForm({ member, plans, onSuccess, onCancel }) {
 
 export default function AdminMembersPage() {
   // ── Search state ────────────────────────────────────────────────────────────
-  const [query, setQuery] = useState("atmgym"); // default shows all members
+  const [query, setQuery] = useState("gym"); // default shows all members
   const [members, setMembers] = useState([]);
   const [totalMembers, setTotalMembers] = useState(0);
   const [page, setPage] = useState(1);
@@ -645,8 +645,8 @@ export default function AdminMembersPage() {
   const searchMembers = useCallback(async (q, pageNum = 1) => {
     setSearching(true);
     try {
-      // Always send "atmosgym" when query is empty so backend shows all members
-      const effectiveQuery = q.trim() || "atmosgym";
+      // Always send "gym" when query is empty so backend shows all members
+      const effectiveQuery = q.trim() || "gym";
       const res = await api.get(
         `/admin/members?q=${encodeURIComponent(effectiveQuery)}&page=${pageNum}&limit=${ITEMS_PER_PAGE}`,
       );
@@ -660,18 +660,18 @@ export default function AdminMembersPage() {
   }, []);
 
   useEffect(() => {
-    searchMembers("atmosgym", 1);
+    searchMembers("gym", 1);
   }, []);
 
   const handleQueryChange = (value) => {
     setQuery(value);
     setPage(1);
-    searchMembers(value || "atmosgym", 1);
+    searchMembers(value || "gym", 1);
   };
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
-    searchMembers(query || "atmosgym", newPage);
+    searchMembers(query || "gym", newPage);
   };
 
   // ── Member detail ────────────────────────────────────────────────────────────
@@ -881,7 +881,7 @@ export default function AdminMembersPage() {
                 outline: "none",
               }}
               placeholder="Search by name, email, phone, ID..."
-              value={query === "atmosgym" ? "" : query}
+              value={query === "gym" ? "" : query}
               onChange={(e) => handleQueryChange(e.target.value)}
             />
             <span
@@ -897,7 +897,7 @@ export default function AdminMembersPage() {
             >
               🔍
             </span>
-            {query !== "atmgym" && query && (
+            {query !== "gym" && query && (
               <button
                 onClick={() => handleQueryChange("")}
                 style={{

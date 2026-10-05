@@ -81,15 +81,18 @@ export const COOKIE_CONFIG = {
 };
 
 export const EMAIL_CONFIG = {
-  FROM_NAME: "ATMOS Gym",
+  FROM_NAME: process.env.GYM_NAME,
   SUBJECTS: {
-    REGISTRATION_OTP: "Verify Your ATMOS Gym Account",
-    FORGOT_PASSWORD_OTP: "Reset Your ATMOS Gym Password",
+    REGISTRATION_OTP: "Verify Your" + process.env.GYM_NAME + "Account",
+    FORGOT_PASSWORD_OTP: "Reset Your" + process.env.GYM_NAME + "Password",
   },
   OTP_VALIDITY_TEXT: `${OTP_CONFIG.EXPIRY_MINUTES} minutes`,
 };
 
-// Add to existing constants.js:
+export const GYM_CONFIG = {
+  NAME  : process.env.GYM_NAME,
+  PREFIX: process.env.GYM_USER_ID_PREFIX,
+};
 
 export const PLAN_DURATIONS = {
   MONTHLY: { days: 30, label: "Monthly" },
@@ -141,4 +144,4 @@ export const GRACE_PERIOD_DAYS = 3;
 
 export const REMINDER_DAYS = [7, 3, 1]; // days before expiry to send reminders
 
-export const RECEIPT_PREFIX = "ATM"; // ATM-2026-00001
+export const RECEIPT_PREFIX = process.env.GYM_USER_ID_PREFIX; // {Prefix}-{Year}-00001

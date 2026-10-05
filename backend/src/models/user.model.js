@@ -4,6 +4,7 @@ import {
   USER_ROLES_ARRAY,
   USER_ROLES,
   BCRYPT_CONFIG,
+  GYM_CONFIG,
 } from "../utils/constants.js";
 
 const userSchema = new mongoose.Schema(
@@ -156,7 +157,7 @@ userSchema.pre("save", async function () {
 userSchema.pre("save", async function () {
   if (!this.isNew || this.userId) return;
   const count = await mongoose.model("User").countDocuments();
-  this.userId = `atmosgym_${String(count + 1).padStart(4, "0")}`;
+  this.userId = `${GYM_CONFIG.PREFIX}_${String(count + 1).padStart(4, "0")}`;
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {

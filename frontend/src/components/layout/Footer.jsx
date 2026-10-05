@@ -4,6 +4,7 @@
 
 import { useNavigate } from "react-router-dom";
 import Logo from "../ui/Logo.jsx";
+import { GYM_NAME, GYM_INITIAL } from "../../utils/gymConfig.js";
 
 export default function Footer() {
   const navigate = useNavigate();
@@ -104,7 +105,7 @@ export default function Footer() {
           gap           : "16px",
         }}>
           <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)" }}>
-            © {new Date().getFullYear()} ATMOS Gym Pvt. Ltd. All rights reserved.
+            © {new Date().getFullYear()} {GYM_NAME} Pvt. Ltd. All rights reserved.
           </span>
 
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>

@@ -3,22 +3,20 @@
 // =============================================================================
 
 import nodemailer from "nodemailer";
-import { EMAIL_CONFIG } from "../../utils/constants.js";
-
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-};
+import { 
+  EMAIL_CONFIG,
+  GYM_CONFIG,
+} from "../../utils/constants.js";
+import { createTransporter, FROM_ADDRESS } from "./transporter.js";
 
 const formatCurrency = (paise) => `₹${(paise / 100).toLocaleString("en-IN")}`;
 
 const formatDate = (date) =>
-  new Date(date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+  new Date(date).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
 // =============================================================================
 // sendPaymentReceipt
@@ -43,7 +41,7 @@ export const sendPaymentReceipt = async (user, subscription, payment) => {
                 <tr>
                   <td style="background:#0a0a0a; padding:28px 32px;">
                     <h1 style="margin:0; color:#ffffff; font-size:20px; font-weight:700; letter-spacing:1px;">
-                      ⚡ ATMOS GYM
+                      💪 ${GYM_CONFIG.NAME.toUpperCase()}
                     </h1>
                   </td>
                 </tr>
@@ -96,7 +94,7 @@ export const sendPaymentReceipt = async (user, subscription, payment) => {
                 <tr>
                   <td style="background:#f9f9f9; padding:20px 32px; border-top:1px solid #eeeeee;">
                     <p style="margin:0; color:#aaaaaa; font-size:12px; text-align:center;">
-                      © ${new Date().getFullYear()} ATMOS Gym. All rights reserved.
+                      © ${new Date().getFullYear()} ${GYM_CONFIG.NAME}. All rights reserved.
                     </p>
                   </td>
                 </tr>
@@ -110,8 +108,8 @@ export const sendPaymentReceipt = async (user, subscription, payment) => {
   `;
 
   await transporter.sendMail({
-    from   : `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
-    to     : user.email,
+    from: `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
+    to: user.email,
     subject: `Payment Receipt — ${payment.receiptNumber}`,
     html,
   });
@@ -123,7 +121,12 @@ export const sendPaymentReceipt = async (user, subscription, payment) => {
 // Sent when admin records a cash/offline payment.
 // =============================================================================
 
-export const sendOfflinePaymentReceipt = async (user, subscription, payment, isPartial) => {
+export const sendOfflinePaymentReceipt = async (
+  user,
+  subscription,
+  payment,
+  isPartial,
+) => {
   const transporter = createTransporter();
 
   const statusText = isPartial
@@ -144,7 +147,7 @@ export const sendOfflinePaymentReceipt = async (user, subscription, payment, isP
                 <tr>
                   <td style="background:#0a0a0a; padding:28px 32px;">
                     <h1 style="margin:0; color:#ffffff; font-size:20px; font-weight:700; letter-spacing:1px;">
-                      ⚡ ATMOS GYM
+                      ${GYM_CONFIG.NAME}
                     </h1>
                   </td>
                 </tr>
@@ -174,11 +177,15 @@ export const sendOfflinePaymentReceipt = async (user, subscription, payment, isP
                         <td style="padding:12px 0 0; border-top:1px solid #eee; color:#1a1a1a; font-size:14px; font-weight:700;">Amount Paid</td>
                         <td style="padding:12px 0 0; border-top:1px solid #eee; color:#e8a827; font-size:16px; text-align:right; font-weight:800;">${formatCurrency(payment.amountPaid)}</td>
                       </tr>
-                      ${isPartial ? `
+                      ${
+                        isPartial
+                          ? `
                       <tr>
                         <td style="padding:4px 0; color:#888; font-size:13px;">Balance Due</td>
                         <td style="padding:4px 0; color:#ef4444; font-size:13px; text-align:right; font-weight:600;">${formatCurrency(payment.amountDue - payment.amountPaid)}</td>
-                      </tr>` : ""}
+                      </tr>`
+                          : ""
+                      }
                     </table>
                   </td>
                 </tr>
@@ -186,7 +193,7 @@ export const sendOfflinePaymentReceipt = async (user, subscription, payment, isP
                 <tr>
                   <td style="background:#f9f9f9; padding:20px 32px; border-top:1px solid #eeeeee;">
                     <p style="margin:0; color:#aaaaaa; font-size:12px; text-align:center;">
-                      © ${new Date().getFullYear()} ATMOS Gym. All rights reserved.
+                      © ${new Date().getFullYear()} ${GYM_CONFIG.NAME}. All rights reserved.
                     </p>
                   </td>
                 </tr>
@@ -200,8 +207,8 @@ export const sendOfflinePaymentReceipt = async (user, subscription, payment, isP
   `;
 
   await transporter.sendMail({
-    from   : `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
-    to     : user.email,
+    from: `"${EMAIL_CONFIG.FROM_NAME}" <${process.env.EMAIL_USER}>`,
+    to: user.email,
     subject: `Membership Activated — ${payment.receiptNumber}`,
     html,
   });
