@@ -1,5 +1,5 @@
 # Product Requirements Document (PRD)
-## ATMOS Gym Web Application
+## HULK Gym Web Application
 **Version:** 1.0  
 **Last Updated:** July 2026  
 **Status:** In Development
@@ -9,10 +9,10 @@
 ## 1. Product Overview
 
 ### 1.1 Product Summary
-ATMOS Gym is a full-stack web application for managing gym memberships, member profiles, trainer interactions, and fitness tracking. It targets both gym owners and members, providing a premium digital experience that matches the quality of a high-end gym.
+HULK Gym is a full-stack web application for managing gym memberships, member profiles, trainer interactions, and fitness tracking. It targets both gym owners and members, providing a premium digital experience that matches the quality of a high-end gym.
 
 ### 1.2 Problem Statement
-Most gym management software is either expensive enterprise software with poor UX, or basic tools that lack the features modern gyms need. ATMOS Gym fills this gap with a modern, beautiful, and feature-rich platform built specifically for the Indian fitness market.
+Most gym management software is either expensive enterprise software with poor UX, or basic tools that lack the features modern gyms need. HULK Gym fills this gap with a modern, beautiful, and feature-rich platform built specifically for the Indian fitness market.
 
 ### 1.3 Target Users
 | User Type | Description |
@@ -55,7 +55,7 @@ Most gym management software is either expensive enterprise software with poor U
 - Bio / about me (max 200 characters)
 - Profile picture upload to Cloudinary (400x400 auto-crop with face detection)
 - Profile picture deletion
-- Auto-generated readable member ID (e.g. `atmosgym_0001`)
+- Auto-generated readable member ID (e.g. `hulkgym_0001`)
 - Account information display (member since, role, email verification status)
 - Active sessions list with device info
 - Per-session revocation from profile

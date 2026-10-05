@@ -1,5 +1,5 @@
 # App Flow Document
-## ATMOS Gym Web Application
+## HULK Gym Web Application
 
 ---
 
@@ -45,7 +45,7 @@ Landing Page → Click "Join Now"
       ↓
   Frontend:
   - Store { user, accessToken } in Zustand
-  - Show "Welcome to ATMOS Gym!" toast
+  - Show "Welcome to HULK Gym!" toast
   - Navigate to /
       ↓
 Landing Page — logged in state (navbar shows "My Profile")

@@ -1,5 +1,5 @@
 # Implementation Plan
-## ATMOS Gym Web Application
+## HULK Gym Web Application
 
 ---
 

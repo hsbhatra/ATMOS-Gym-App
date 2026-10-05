@@ -1,5 +1,5 @@
 # Technical Requirements Document (TRD)
-## ATMOS Gym Web Application
+## HULK Gym Web Application
 **Version:** 1.0  
 **Last Updated:** July 2026
 
@@ -7,7 +7,7 @@
 
 ## 1. Architecture Overview
 
-ATMOS Gym follows a standard three-tier architecture:
+HULK Gym follows a standard three-tier architecture:
 
 ```
 Client (React/Vite)

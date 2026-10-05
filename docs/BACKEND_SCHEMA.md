@@ -1,5 +1,5 @@
 # Backend Schema Document
-## ATMOS Gym Web Application
+## HULK Gym Web Application
 
 ---
 
@@ -10,7 +10,7 @@
 **Collections:** 4 (authentication phase)
 
 ```
-atmos-gym-dev (database)
+hulk-gym-dev (database)
 ├── users
 ├── otps
 ├── sessions

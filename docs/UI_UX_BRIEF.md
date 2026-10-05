@@ -1,11 +1,11 @@
 # UI/UX Brief
-## ATMOS Gym Web Application
+## HULK Gym Web Application
 
 ---
 
 ## 1. Design Philosophy
 
-ATMOS Gym's visual identity is built on three principles:
+HULK Gym's visual identity is built on three principles:
 
 **Premium Dark Aesthetic**
 The app uses a near-black background (#0a0a0a) with gold accents (#e8c44a). This combination signals luxury, seriousness, and strength — the same feeling you get walking into a high-end gym.
