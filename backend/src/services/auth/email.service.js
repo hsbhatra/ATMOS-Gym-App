@@ -1,45 +1,16 @@
-import { EMAIL_CONFIG, OTP_CONFIG } from "../../utils/constants.js";
+import nodemailer from "nodemailer";
+import { EMAIL_CONFIG, OTP_CONFIG, GYM_CONFIG } from "../../utils/constants.js";
+import { createTransporter, FROM_ADDRESS } from "../email/transporter.js";
 
 const sendOtpEmail = async (to, subject, htmlBody) => {
-  try {
-    // Use Brevo API if API key is available
-    if (process.env.BREVO_API_KEY) {
-      console.log("[Email] Using Brevo API to send email");
-      const fromEmail = process.env.BREVO_SENDER_EMAIL || process.env.BREVO_SMTP_USER || process.env.EMAIL_USER;
-      
-      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-        method: "POST",
-        headers: {
-          "api-key": process.env.BREVO_API_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sender: {
-            name: EMAIL_CONFIG.FROM_NAME,
-            email: fromEmail,
-          },
-          to: [{ email: to }],
-          subject,
-          htmlContent: htmlBody,
-        }),
-      });
+  const transporter = createTransporter();
 
-      if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(`Brevo API error: ${response.status} - ${errorData}`);
-      }
-
-      console.log(`[Email] Email sent successfully to ${to} via Brevo API`);
-      return;
-    }
-    
-    // Fallback: If no API key, just log (for testing)
-    console.log(`[Email] No Brevo API key found - email not sent (for testing only)`);
-  } catch (error) {
-    console.error(`[Email] Failed to send email to ${to}:`, error.message);
-    console.error(`[Email] Error details:`, error.stack);
-    // Don't throw the error - let the registration proceed even if email fails
-  }
+  await transporter.sendMail({
+    from: `"${EMAIL_CONFIG.FROM_NAME}" <${FROM_ADDRESS}>`,
+    to,
+    subject,
+    html: htmlBody,
+  });
 };
 
 const buildOtpEmailHtml = (otp, headingText, bodyText) => {
@@ -63,7 +34,7 @@ const buildOtpEmailHtml = (otp, headingText, bodyText) => {
                   <td style="background:#1a1a1a; padding:28px 32px;">
                     <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:700;
                                letter-spacing:1px;">
-                      ⚡ ATMOS GYM
+                      ⚡ ${GYM_CONFIG.NAME}
                     </h1>
                   </td>
                 </tr>
@@ -108,7 +79,7 @@ const buildOtpEmailHtml = (otp, headingText, bodyText) => {
                               border-top:1px solid #eeeeee;">
                     <p style="margin:0; color:#aaaaaa; font-size:12px; text-align:center;">
                       If you did not request this, please ignore this email.<br/>
-                      © ${new Date().getFullYear()} ATMOS Gym. All rights reserved.
+                      © ${new Date().getFullYear()} ${GYM_CONFIG.NAME}. All rights reserved.
                     </p>
                   </td>
                 </tr>

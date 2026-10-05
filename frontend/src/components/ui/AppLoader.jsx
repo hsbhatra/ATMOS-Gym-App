@@ -3,6 +3,7 @@
 // =============================================================================
 
 import { motion } from "framer-motion";
+import { GYM_NAME, GYM_INITIAL } from "../../utils/gymConfig.js";
 
 export default function AppLoader() {
   return (
@@ -38,7 +39,7 @@ export default function AppLoader() {
           color          : "#0a0a0a",
           fontSize       : "26px",
         }}>
-        A
+        {GYM_INITIAL}
       </motion.div>
 
       {/* Spinner */}
@@ -59,7 +60,7 @@ export default function AppLoader() {
         color     : "rgba(255,255,255,0.25)",
         letterSpacing: "1px",
       }}>
-        ATMOS GYM
+        {GYM_NAME.toUpperCase()}
       </p>
     </div>
   );

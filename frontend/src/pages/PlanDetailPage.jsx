@@ -99,7 +99,7 @@ export default function PlanDetailPage() {
         key: orderData.keyId,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: "ATMOS Gym",
+        name: "HULK Gym",
         description: `${orderData.planName} — ${orderData.durationLabel}`,
         order_id: orderData.razorpayOrderId,
         prefill: {
